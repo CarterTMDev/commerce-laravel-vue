@@ -12,22 +12,22 @@
             <tr
                 v-for="customer in customers"
                 :key="customer.id"
-                v-on:click="selectCustomer(customer)"
+                @click="selectCustomer(customer)"
             >
                 <td>{{ customer.first_name + " " + customer.last_name }}</td>
                 <td>{{ customer.email }}</td>
                 <td>{{ getFullAddress(customer) }}</td>
-                <td v-on:click.stop>
+                <td @click.stop>
                     <button
                         class="btn btn-primary"
                         data-bs-toggle="modal"
                         data-bs-target="#editModal"
-                        v-on:click="editCustomer = customer"
+                        @click="editCustomer = customer"
                     >
                         Edit
                     </button>
                 </td>
-                <td v-on:click.stop>
+                <td @click.stop>
                     <button
                         class="btn btn-danger"
                         data-bs-toggle="modal"
@@ -39,7 +39,7 @@
             </tr>
         </tbody>
     </table>
-    <customer-edit-modal :customer="editCustomer"></customer-edit-modal>
+    <customer-edit-modal @update:customer="updateCustomer" :customer="editCustomer"></customer-edit-modal>
 </div>
 </template>
 
@@ -72,6 +72,15 @@ export default {
         },
         selectCustomer(customer) {
             window.location.href='/customer/' + customer.id;
+        },
+        updateCustomer(customer) {
+            this.editCustomer = customer;
+            for (let i = 0; i < this.customers.length; i++) {
+                if (this.customers[i].id === customer.id) {
+                    this.customers[i] = customer;
+                    break;
+                }
+            }
         }
     }
 }

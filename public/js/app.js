@@ -5325,7 +5325,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      id: "editModal"
+      id: "editModal",
+      customerEdit: JSON.parse(JSON.stringify(this.customer))
     };
   },
   props: {
@@ -5335,11 +5336,55 @@ __webpack_require__.r(__webpack_exports__);
     onSubmit: function onSubmit() {
       var valid = true; // TODO: Validate input
 
-      if (valid) {// TODO: Check if customer info has been changed
-        //      - Don't bother the API if nothing changed
-        // TODO: Fetch put request to update customer
-        // TODO: Fetch post request to create customer
+      if (valid) {
+        // TODO: Check if customer info has been changed
+        var newCustomer = {};
+
+        for (var key in this.customerEdit) {
+          if (Object.hasOwnProperty.call(this.customerEdit, key)) {
+            var element = this.customerEdit[key];
+
+            if (element !== this.customer[key]) {
+              newCustomer[key] = element;
+            }
+          }
+        }
+
+        var success = true; // Don't bother the API if nothing changed
+
+        if (Object.keys(newCustomer).length !== 0) {
+          // Fetch patch request to update customer
+          this.updateCustomer(newCustomer, this.customer.id);
+        } // TODO: Handle failed requests
+
+
+        if (success) {// TODO: Close the modal
+        }
       }
+    },
+    updateCustomer: function updateCustomer(updatedCustomer, customerId) {
+      var _this = this;
+
+      var method = "PATCH";
+      var request = {
+        'method': method,
+        body: JSON.stringify(updatedCustomer),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+      fetch('api/customer/' + customerId, request).then(function (res) {
+        return res.json();
+      }).then(function (res) {
+        return _this.$emit("update:customer", res);
+      })["catch"](function (error) {
+        return console.log(error);
+      });
+    }
+  },
+  watch: {
+    customer: function customer() {
+      this.customerEdit = JSON.parse(JSON.stringify(this.customer));
     }
   }
 });
@@ -5438,6 +5483,16 @@ __webpack_require__.r(__webpack_exports__);
     },
     selectCustomer: function selectCustomer(customer) {
       window.location.href = '/customer/' + customer.id;
+    },
+    updateCustomer: function updateCustomer(customer) {
+      this.editCustomer = customer;
+
+      for (var i = 0; i < this.customers.length; i++) {
+        if (this.customers[i].id === customer.id) {
+          this.customers[i] = customer;
+          break;
+        }
+      }
     }
   }
 });
@@ -28296,8 +28351,8 @@ var render = function () {
                           {
                             name: "model",
                             rawName: "v-model",
-                            value: _vm.customer.first_name,
-                            expression: "customer.first_name",
+                            value: _vm.customerEdit.first_name,
+                            expression: "customerEdit.first_name",
                           },
                         ],
                         staticClass: "form-control",
@@ -28306,14 +28361,14 @@ var render = function () {
                           placeholder: "",
                           required: "",
                         },
-                        domProps: { value: _vm.customer.first_name },
+                        domProps: { value: _vm.customerEdit.first_name },
                         on: {
                           input: function ($event) {
                             if ($event.target.composing) {
                               return
                             }
                             _vm.$set(
-                              _vm.customer,
+                              _vm.customerEdit,
                               "first_name",
                               $event.target.value
                             )
@@ -28337,8 +28392,8 @@ var render = function () {
                           {
                             name: "model",
                             rawName: "v-model",
-                            value: _vm.customer.last_name,
-                            expression: "customer.last_name",
+                            value: _vm.customerEdit.last_name,
+                            expression: "customerEdit.last_name",
                           },
                         ],
                         staticClass: "form-control",
@@ -28347,14 +28402,14 @@ var render = function () {
                           placeholder: "",
                           required: "",
                         },
-                        domProps: { value: _vm.customer.last_name },
+                        domProps: { value: _vm.customerEdit.last_name },
                         on: {
                           input: function ($event) {
                             if ($event.target.composing) {
                               return
                             }
                             _vm.$set(
-                              _vm.customer,
+                              _vm.customerEdit,
                               "last_name",
                               $event.target.value
                             )
@@ -28375,19 +28430,19 @@ var render = function () {
                       {
                         name: "model",
                         rawName: "v-model",
-                        value: _vm.customer.email,
-                        expression: "customer.email",
+                        value: _vm.customerEdit.email,
+                        expression: "customerEdit.email",
                       },
                     ],
                     staticClass: "form-control",
                     attrs: { id: "email", placeholder: "", required: "" },
-                    domProps: { value: _vm.customer.email },
+                    domProps: { value: _vm.customerEdit.email },
                     on: {
                       input: function ($event) {
                         if ($event.target.composing) {
                           return
                         }
-                        _vm.$set(_vm.customer, "email", $event.target.value)
+                        _vm.$set(_vm.customerEdit, "email", $event.target.value)
                       },
                     },
                   }),
@@ -28403,19 +28458,23 @@ var render = function () {
                       {
                         name: "model",
                         rawName: "v-model",
-                        value: _vm.customer.address_1,
-                        expression: "customer.address_1",
+                        value: _vm.customerEdit.address_1,
+                        expression: "customerEdit.address_1",
                       },
                     ],
                     staticClass: "form-control",
                     attrs: { id: "address_1", placeholder: "", required: "" },
-                    domProps: { value: _vm.customer.address_1 },
+                    domProps: { value: _vm.customerEdit.address_1 },
                     on: {
                       input: function ($event) {
                         if ($event.target.composing) {
                           return
                         }
-                        _vm.$set(_vm.customer, "address_1", $event.target.value)
+                        _vm.$set(
+                          _vm.customerEdit,
+                          "address_1",
+                          $event.target.value
+                        )
                       },
                     },
                   }),
@@ -28431,19 +28490,23 @@ var render = function () {
                       {
                         name: "model",
                         rawName: "v-model",
-                        value: _vm.customer.address_2,
-                        expression: "customer.address_2",
+                        value: _vm.customerEdit.address_2,
+                        expression: "customerEdit.address_2",
                       },
                     ],
                     staticClass: "form-control",
                     attrs: { id: "address_2", placeholder: "" },
-                    domProps: { value: _vm.customer.address_2 },
+                    domProps: { value: _vm.customerEdit.address_2 },
                     on: {
                       input: function ($event) {
                         if ($event.target.composing) {
                           return
                         }
-                        _vm.$set(_vm.customer, "address_2", $event.target.value)
+                        _vm.$set(
+                          _vm.customerEdit,
+                          "address_2",
+                          $event.target.value
+                        )
                       },
                     },
                   }),
@@ -28461,19 +28524,23 @@ var render = function () {
                           {
                             name: "model",
                             rawName: "v-model",
-                            value: _vm.customer.city,
-                            expression: "customer.city",
+                            value: _vm.customerEdit.city,
+                            expression: "customerEdit.city",
                           },
                         ],
                         staticClass: "form-control",
                         attrs: { id: "city", placeholder: "", required: "" },
-                        domProps: { value: _vm.customer.city },
+                        domProps: { value: _vm.customerEdit.city },
                         on: {
                           input: function ($event) {
                             if ($event.target.composing) {
                               return
                             }
-                            _vm.$set(_vm.customer, "city", $event.target.value)
+                            _vm.$set(
+                              _vm.customerEdit,
+                              "city",
+                              $event.target.value
+                            )
                           },
                         },
                       }),
@@ -28491,19 +28558,23 @@ var render = function () {
                           {
                             name: "model",
                             rawName: "v-model",
-                            value: _vm.customer.state,
-                            expression: "customer.state",
+                            value: _vm.customerEdit.state,
+                            expression: "customerEdit.state",
                           },
                         ],
                         staticClass: "form-control",
                         attrs: { id: "state", placeholder: "", required: "" },
-                        domProps: { value: _vm.customer.state },
+                        domProps: { value: _vm.customerEdit.state },
                         on: {
                           input: function ($event) {
                             if ($event.target.composing) {
                               return
                             }
-                            _vm.$set(_vm.customer, "state", $event.target.value)
+                            _vm.$set(
+                              _vm.customerEdit,
+                              "state",
+                              $event.target.value
+                            )
                           },
                         },
                       }),
@@ -28526,20 +28597,20 @@ var render = function () {
                           {
                             name: "model",
                             rawName: "v-model",
-                            value: _vm.customer.zipcode,
-                            expression: "customer.zipcode",
+                            value: _vm.customerEdit.zipcode,
+                            expression: "customerEdit.zipcode",
                           },
                         ],
                         staticClass: "form-control",
                         attrs: { id: "zipcode", placeholder: "", required: "" },
-                        domProps: { value: _vm.customer.zipcode },
+                        domProps: { value: _vm.customerEdit.zipcode },
                         on: {
                           input: function ($event) {
                             if ($event.target.composing) {
                               return
                             }
                             _vm.$set(
-                              _vm.customer,
+                              _vm.customerEdit,
                               "zipcode",
                               $event.target.value
                             )
@@ -28563,20 +28634,20 @@ var render = function () {
                           {
                             name: "model",
                             rawName: "v-model",
-                            value: _vm.customer.country,
-                            expression: "customer.country",
+                            value: _vm.customerEdit.country,
+                            expression: "customerEdit.country",
                           },
                         ],
                         staticClass: "form-control",
                         attrs: { id: "country", placeholder: "", required: "" },
-                        domProps: { value: _vm.customer.country },
+                        domProps: { value: _vm.customerEdit.country },
                         on: {
                           input: function ($event) {
                             if ($event.target.composing) {
                               return
                             }
                             _vm.$set(
-                              _vm.customer,
+                              _vm.customerEdit,
                               "country",
                               $event.target.value
                             )
@@ -28738,7 +28809,10 @@ var render = function () {
         ),
       ]),
       _vm._v(" "),
-      _c("customer-edit-modal", { attrs: { customer: _vm.editCustomer } }),
+      _c("customer-edit-modal", {
+        attrs: { customer: _vm.editCustomer },
+        on: { "update:customer": _vm.updateCustomer },
+      }),
     ],
     1
   )

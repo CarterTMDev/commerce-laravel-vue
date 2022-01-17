@@ -53,7 +53,33 @@ class CustomerController extends Controller
      */
     public function update(Request $request, Customer $customer)
     {
-        //
+        // This should only respond to patch requests since you shouldn't
+        // be able to update a customer's id, updated_at, or created_at columns
+        if ($request->isMethod('PATCH'))
+        {
+            // Check for requested changes to fillable values
+            $customerAttr = $customer->getAttributes();
+            $updatedAttr = [];
+            foreach ($customerAttr as $key => $value) {
+                if ($request->has($key))
+                {
+                    $column = $request->input($key);
+                    if ($column != $value)
+                    {
+                        // TODO: input validation
+                        $updatedAttr[$key] = $column;
+                    }
+                }
+            }
+            if (!empty($updatedAttr))
+            {
+                // Update customer
+                $customer->fill($updatedAttr);
+                // Save customer
+                $customer->save();
+            }
+            return $customer;
+        }
     }
 
     /**
