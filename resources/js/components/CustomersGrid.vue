@@ -1,32 +1,60 @@
 <template>
+<div>
     <table class="table">
         <thead>
             <tr>
                 <th>Name</th>
                 <th>Email</th>
+                <th>Address</th>
             </tr>
         </thead>
         <tbody>
             <tr
                 v-for="customer in customers"
                 :key="customer.id"
-                v-on:click="window.location.href='/customer/' + customer.id"
+                v-on:click="selectCustomer(customer)"
             >
                 <td>{{ customer.first_name + " " + customer.last_name }}</td>
                 <td>{{ customer.email }}</td>
-                <td><button class="btn btn-primary">Edit</button></td>
-                <td><button class="btn btn-primary">Delete</button></td>
+                <td>{{ getFullAddress(customer) }}</td>
+                <td v-on:click.stop>
+                    <button
+                        class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#editModal"
+                        v-on:click="editCustomer = customer"
+                    >
+                        Edit
+                    </button>
+                </td>
+                <td v-on:click.stop>
+                    <button
+                        class="btn btn-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#deleteModal"
+                    >
+                        Delete
+                    </button>
+                </td>
             </tr>
         </tbody>
     </table>
+    <customer-edit-modal :customer="editCustomer"></customer-edit-modal>
+</div>
 </template>
 
 <script>
+import CustomerEditModal from './CustomerEditModal.vue';
 export default {
+    components: { CustomerEditModal },
     data() {
         return {
-            customers: []
+            customers: [],
+            editCustomer: this.customer
         }
+    },
+    props: {
+        customer: Object
     },
     created() {
         fetch('/api/customer')
@@ -35,7 +63,16 @@ export default {
             .catch(error => console.log(error));
     },
     methods: {
-        
+        getFullAddress(customer) {
+            let address = customer.address_1;
+            address += customer.address_2 ? " " + customer.address_2 + ", " : ", ";
+            address += customer.city + ", ";
+            address += customer.state + " " + customer.zipcode;
+            return address;
+        },
+        selectCustomer(customer) {
+            window.location.href='/customer/' + customer.id;
+        }
     }
 }
 </script>

@@ -4,8 +4,7 @@
 
 @section('content')
 
-<customers-grid></customers-grid>
 {{-- TODO: create "Add Customer" button --}}
-<customer-edit-modal :customer="{{ Js::from((new \App\Models\Customer())->makeEmpty()); }}"></customer-edit-modal>
+<customers-grid :customer="{{ Js::from((new \App\Models\Customer())->makeEmpty()); }}"></customers-grid>
 
 @endsection
