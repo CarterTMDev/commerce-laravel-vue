@@ -1,5 +1,5 @@
 <template>
-    <form method="post" action="">
+    <form @submit.prevent="onSubmit">
     <div class="modal fade" :id="id" tabindex="-1" :aria-labelledby="id + 'Label'" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -41,6 +41,18 @@ export default {
     },
     props: {
         customer: Object
+    },
+    methods: {
+        onSubmit() {
+            let valid = true;
+            // TODO: Validate input
+            if (valid) {
+                // TODO: Check if customer info has been changed
+                //      - Don't bother the API if nothing changed
+                // TODO: Fetch put request to update customer
+                // TODO: Fetch post request to create customer
+            }
+        }
     }
 }
 </script>

@@ -19,4 +19,14 @@ class Customer extends Model
         'zipcode',
         'country'
     ];
+
+    public function makeEmpty()
+    {
+        $empty = [];
+        $_fillable = (new Customer())->getFillable();
+        foreach ($_fillable as $value) {
+            $empty[$value] = null;
+        }
+        return $empty;
+    }
 }

@@ -9,7 +9,7 @@
         <tbody>
             <tr
                 v-for="customer in customers"
-                :key="customer"
+                :key="customer.id"
                 v-on:click="window.location.href='/customer/' + customer.id"
             >
                 <td>{{ customer.first_name + " " + customer.last_name }}</td>
