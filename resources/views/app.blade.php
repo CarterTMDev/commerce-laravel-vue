@@ -1,9 +1,10 @@
 @extends('layouts.base')
 
-@section('title', 'TEST TITLE')
+@section('title', 'Customers')
 
 @section('content')
 
-<example-component></example-component>
+<customers-grid></customers-grid>
+{{-- TODO: create "Add Customer" button --}}
 
 @endsection
