@@ -27,7 +27,23 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Check for fillable values
+        $customer = new Customer();
+        $customerAttr = $customer->getFillable();
+        $valid = true;
+        foreach ($customerAttr as $attr) {
+            if ($request->has($attr)) {
+                $value = $request->input($attr);
+                // TODO: input validation
+                $customer->setAttribute($attr, $value);
+            }
+        }
+        if ($valid) {
+            // Save customer
+            $customer->save();
+            return $customer;
+        }
+        // TODO: Return a proper response
     }
 
     /**
@@ -80,6 +96,7 @@ class CustomerController extends Controller
             }
             return $customer;
         }
+        // TODO: Return a proper response
     }
 
     /**

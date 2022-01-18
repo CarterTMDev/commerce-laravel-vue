@@ -21,8 +21,9 @@
                     <button
                         class="btn btn-primary"
                         data-bs-toggle="modal"
-                        data-bs-target="#editModal"
-                        @click="editCustomer = customer"
+                        data-bs-target="#customersModal"
+                        @click="editCustomer = customer;
+                                $emit('modal:mode', 'edit');"
                     >
                         Edit
                     </button>
@@ -32,6 +33,7 @@
                         class="btn btn-danger"
                         data-bs-toggle="modal"
                         data-bs-target="#deleteModal"
+
                     >
                         Delete
                     </button>
@@ -39,12 +41,27 @@
             </tr>
         </tbody>
     </table>
-    <customer-edit-modal @update:customer="updateCustomer" :customer="editCustomer"></customer-edit-modal>
+    <button
+        class="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#customersModal"
+        @click="editCustomer = customer;
+                $emit('modal:mode', 'add');"
+    >
+        Add customer
+    </button>
+    <customers-modal
+        id="customersModal"
+        @update:customer="updateCustomer"
+        @add:customer="addCustomer"
+        :customer="editCustomer"
+    >
+    </customers-modal>
 </div>
 </template>
 
 <script>
-import CustomerEditModal from './CustomerEditModal.vue';
+import CustomerEditModal from './CustomersModal.vue';
 export default {
     components: { CustomerEditModal },
     data() {
@@ -81,6 +98,9 @@ export default {
                     break;
                 }
             }
+        },
+        addCustomer(customer) {
+            this.customers.push(customer);
         }
     }
 }

@@ -1,11 +1,11 @@
 <template>
-    <form @submit.prevent="onSubmit">
+    <form @submit.prevent="onSubmit" @modal:mode="mode = $event">
     <div class="modal fade" :id="id" tabindex="-1" :aria-labelledby="id + 'Label'" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" :id="id + 'Label'">Edit Customer</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" :id="id + 'Label'">{{ mode === "add" ? "Add" : "Edit" }} Customer</h5>
+                    <button ref="modalCloseBtn" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="container">
@@ -50,7 +50,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button type="submit" class="btn btn-primary">{{ mode === "add" ? "Add customer" : "Save changes" }}</button>
                 </div>
             </div>
         </div>
@@ -62,37 +62,63 @@
 export default {
     data() {
         return {
-            id: "editModal",
-            customerEdit: JSON.parse(JSON.stringify(this.customer))
+            customerEdit: JSON.parse(JSON.stringify(this.customer)),
+            mode: {
+                type: String,
+                default: 'add',
+                validator: function(val) {
+                    return ['add', 'edit'].indexOf(val) !== -1;
+                }
+            }
         }
     },
     props: {
-        customer: Object
+        customer: Object,
+        id: {
+            type: String,
+            required: true
+        }
+    },
+    mounted() {
+        this.$parent.$on('modal:mode', this.setMode);
     },
     methods: {
         onSubmit() {
             let valid = true;
             // TODO: Validate input
             if (valid) {
-                // TODO: Check if customer info has been changed
-                let newCustomer = {};
-                for (const key in this.customerEdit) {
-                    if (Object.hasOwnProperty.call(this.customerEdit, key)) {
-                        const element = this.customerEdit[key];
-                        if (element !== this.customer[key]) {
-                            newCustomer[key] = element;
-                        }
-                    }
-                }
                 let success = true;
-                // Don't bother the API if nothing changed
-                if (Object.keys(newCustomer).length !== 0) {
-                    // Fetch patch request to update customer
-                    this.updateCustomer(newCustomer, this.customer.id);
-                }
-                // TODO: Handle failed requests
-                if (success) {
-                    // TODO: Close the modal
+                switch (this.mode) {
+                    case "edit":
+                        // TODO: Check if customer info has been changed
+                        let newCustomer = {};
+                        for (const key in this.customerEdit) {
+                            if (Object.hasOwnProperty.call(this.customerEdit, key)) {
+                                const element = this.customerEdit[key];
+                                if (element !== this.customer[key]) {
+                                    newCustomer[key] = element;
+                                }
+                            }
+                        }
+                        // Don't bother the API if nothing changed
+                        if (Object.keys(newCustomer).length !== 0) {
+                            // Fetch patch request to update customer
+                            this.updateCustomer(newCustomer, this.customer.id);
+                        }
+                        // TODO: Handle failed requests
+                        if (success) {
+                            // TODO: Close the modal
+                            this.closeModal();
+                        }
+                        break;
+                    case "add":
+                        this.addCustomer(this.customerEdit);
+                        // TODO: Handle failed requests
+                        if (success) {
+                            // TODO: Close the modal
+                            this.closeModal();
+                        }
+                        break;
                 }
             }
         },
@@ -109,6 +135,25 @@ export default {
                 .then(res => res.json())
                 .then(res => this.$emit("update:customer", res))
                 .catch(error => console.log(error));
+        },
+        addCustomer(newCustomer) {
+            let request = {
+                method: "POST",
+                body: JSON.stringify(newCustomer),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+            fetch('api/customer', request)
+                .then(res => res.json())
+                .then(res => this.$emit("add:customer", res))
+                .catch(error => console.log(error));
+        },
+        setMode(newMode) {
+            this.mode = newMode;
+        },
+        closeModal() {
+            this.$refs.modalCloseBtn.click();
         }
     },
     watch: {
