@@ -36,14 +36,23 @@ class CustomerController extends Controller
                 $value = $request->input($attr);
                 // TODO: input validation
                 $customer->setAttribute($attr, $value);
+            } else {
+                $valid = false;
             }
         }
         if ($valid) {
             // Save customer
-            $customer->save();
-            return $customer;
+            if ($customer->save()) {
+                // Customer saved
+                return $customer;
+            } else {
+                // Return 400
+                return response()->json([], 400);
+            }
+        } else {
+            // Return 400
+            return response()->json([], 400);
         }
-        // TODO: Return a proper response
     }
 
     /**
@@ -56,7 +65,7 @@ class CustomerController extends Controller
     {
         // Responds to /api/customer/{id}
         // Returns the customer with that id if one exists
-        //  if not, returns 404
+        //  if not, returns 404 automatically
         return $customer;
     }
 
@@ -71,32 +80,36 @@ class CustomerController extends Controller
     {
         // This should only respond to patch requests since you shouldn't
         // be able to update a customer's id, updated_at, or created_at columns
-        if ($request->isMethod('PATCH'))
-        {
+        if ($request->isMethod('PATCH')) {
             // Check for requested changes to fillable values
             $customerAttr = $customer->getAttributes();
             $updatedAttr = [];
+            $valid = true;
             foreach ($customerAttr as $key => $value) {
-                if ($request->has($key))
-                {
+                if ($request->has($key)) {
                     $column = $request->input($key);
-                    if ($column != $value)
-                    {
+                    if ($column != $value) {
                         // TODO: input validation
                         $updatedAttr[$key] = $column;
                     }
                 }
             }
-            if (!empty($updatedAttr))
-            {
+            if (!empty($updatedAttr) && $valid) {
                 // Update customer
                 $customer->fill($updatedAttr);
                 // Save customer
-                $customer->save();
+                if ($customer->save()) {
+                    return $customer;
+                } else {
+                    return response()->json([], 400);
+                }
+            } else {
+                return response()->json([], 400);
             }
-            return $customer;
+        } else {
+            // Send 405: Method not allowed
+            return response()->json([], 405);
         }
-        // TODO: Return a proper response
     }
 
     /**
@@ -107,14 +120,10 @@ class CustomerController extends Controller
      */
     public function destroy(Customer $customer)
     {
-        if ($customer->delete())
-        {
+        if ($customer->delete()) {
             return response()->json();
+        } else {
+            return response()->json([], 400);
         }
-        else
-        {
-            return response()->json();
-        }
-        // TODO: Return proper responses
     }
 }
