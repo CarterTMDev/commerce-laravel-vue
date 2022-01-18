@@ -17,6 +17,7 @@ class CustomerController extends Controller
         // Retrieve customers from the table
         $customers = Customer::all();
         return $customers;
+        // TODO: Paginate data
     }
 
     /**

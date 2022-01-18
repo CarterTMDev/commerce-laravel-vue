@@ -3,9 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\Customer;
+use App\Models\Order;
 use Illuminate\Database\Seeder;
 
-class CustomersTableSeeder extends Seeder
+class CustomerSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,6 +17,7 @@ class CustomersTableSeeder extends Seeder
     {
         Customer::factory()
             ->count(10)
+            ->has(Order::factory()->count(rand(0, 3)))// Creates orders
             ->create();
     }
 }
