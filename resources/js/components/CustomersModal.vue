@@ -107,7 +107,6 @@ export default {
                         }
                         // TODO: Handle failed requests
                         if (success) {
-                            // TODO: Close the modal
                             this.closeModal();
                         }
                         break;
@@ -115,7 +114,6 @@ export default {
                         this.addCustomer(this.customerEdit);
                         // TODO: Handle failed requests
                         if (success) {
-                            // TODO: Close the modal
                             this.closeModal();
                         }
                         break;

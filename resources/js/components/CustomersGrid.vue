@@ -33,7 +33,7 @@
                         class="btn btn-danger"
                         data-bs-toggle="modal"
                         data-bs-target="#deleteModal"
-
+                        @click="editCustomer = customer"
                     >
                         Delete
                     </button>
@@ -57,13 +57,22 @@
         :customer="editCustomer"
     >
     </customers-modal>
+    <warning-modal
+        id="deleteModal"
+        label="Delete customer"
+        :message="'Are you sure you want to permanently delete '
+                    + editCustomer.first_name + ' ' + editCustomer.last_name + '?'"
+        @deleteModal:success="deleteCustomer"
+    >
+    </warning-modal>
 </div>
 </template>
 
 <script>
 import CustomerEditModal from './CustomersModal.vue';
+import WarningModal from './WarningModal.vue';
 export default {
-    components: { CustomerEditModal },
+    components: { CustomerEditModal, WarningModal },
     data() {
         return {
             customers: [],
@@ -101,6 +110,26 @@ export default {
         },
         addCustomer(customer) {
             this.customers.push(customer);
+        },
+        deleteCustomer() {
+            // TODO: Fetch DELETE to delete editCustomer.id
+            let success = true;
+            fetch('/api/customer/' + this.editCustomer.id, {
+                method: 'DELETE'
+            }).then(res => res.json())
+            .catch(error => console.log(error));
+            // TODO: Handle failed requests
+            if (success) {
+                // Remove deleted customer from customers
+                for (let i = 0; i < this.customers.length; i++) {
+                    if (this.customers[i].id === this.editCustomer.id) {
+                        this.customers.splice(i, 1);
+                        break;
+                    }
+                }
+                // Set editCustomer to the empty customer object
+                this.editCustomer = this.customer;
+            }
         }
     }
 }
