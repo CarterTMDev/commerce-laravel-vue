@@ -32,6 +32,7 @@ class CustomerController extends Controller
         $customer = new Customer();
         $customerAttr = $customer->getFillable();
         $valid = true;
+        // TODO: If request has an unexpected input item key, $valid = false
         foreach ($customerAttr as $attr) {
             if ($request->has($attr)) {
                 $value = $request->input($attr);
@@ -86,6 +87,7 @@ class CustomerController extends Controller
             $customerAttr = $customer->getAttributes();
             $updatedAttr = [];
             $valid = true;
+            // TODO: If request has an unexpected input item key, $valid = false
             foreach ($customerAttr as $key => $value) {
                 if ($request->has($key)) {
                     $column = $request->input($key);

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,3 +22,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // API endpoint for the customers table
 Route::apiResource('customer', CustomerController::class);
+
+// API endpoint for the orders table
+Route::apiResource('order', OrderController::class);
