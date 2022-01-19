@@ -72,7 +72,38 @@ export default {
             };
         },
         exportToCsv() {
-            
+            // Convert report to a string in CSV format
+            let csvString = '';
+            let csvHeaders = '';
+            for (const key in this.report) {
+                csvHeaders += key + ',';
+                if (this.report[key].toString().includes(',')) {
+                    csvString += '\"' + this.report[key] + '\",';
+                } else {
+                    csvString += this.report[key] + ',';
+                }
+            }
+            csvString = csvString.substring(0, csvString.length - 1);
+            csvHeaders = csvHeaders.substring(0, csvHeaders.length - 1);
+            // Create the CSV
+            let filename = 'order_' + this.order.id + '.csv';
+            let blob = new Blob([csvHeaders + '\r\n' + csvString], { type: 'text/csv;charset=utf-8;' });
+            if (navigator.msSaveBlob) { // IE 10+
+                navigator.msSaveBlob(blob, filename);
+            } else {
+                let link = document.createElement("a");
+                // Check if this browser supports the HTML5 download attribute
+                if (link.download !== undefined) {
+                    // Download the CSV
+                    let url = URL.createObjectURL(blob);
+                    link.setAttribute("href", url);
+                    link.setAttribute("download", filename);
+                    link.style.visibility = 'hidden';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            }
         }
     }
 }

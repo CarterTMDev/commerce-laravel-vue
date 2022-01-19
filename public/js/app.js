@@ -5639,10 +5639,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -5694,7 +5690,47 @@ __webpack_require__.r(__webpack_exports__);
         'Total': '$' + Number(this.order.initial_cost + this.order.shipping_cost).toFixed(2)
       };
     },
-    exportToCsv: function exportToCsv() {}
+    exportToCsv: function exportToCsv() {
+      // Convert report to a string in CSV format
+      var csvString = '';
+      var csvHeaders = '';
+
+      for (var key in this.report) {
+        csvHeaders += key + ',';
+
+        if (this.report[key].toString().includes(',')) {
+          csvString += '\"' + this.report[key] + '\",';
+        } else {
+          csvString += this.report[key] + ',';
+        }
+      }
+
+      csvString = csvString.substring(0, csvString.length - 1);
+      csvHeaders = csvHeaders.substring(0, csvHeaders.length - 1); // Create the CSV
+
+      var filename = 'order_' + this.order.id + '.csv';
+      var blob = new Blob([csvHeaders + '\r\n' + csvString], {
+        type: 'text/csv;charset=utf-8;'
+      });
+
+      if (navigator.msSaveBlob) {
+        // IE 10+
+        navigator.msSaveBlob(blob, filename);
+      } else {
+        var link = document.createElement("a"); // Check if this browser supports the HTML5 download attribute
+
+        if (link.download !== undefined) {
+          // Download the CSV
+          var url = URL.createObjectURL(blob);
+          link.setAttribute("href", url);
+          link.setAttribute("download", filename);
+          link.style.visibility = 'hidden';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      }
+    }
   }
 });
 
@@ -29702,22 +29738,18 @@ var render = function () {
   return _c("div", { staticClass: "pt-3" }, [
     _c("h3", [_vm._v("Order Report")]),
     _vm._v(" "),
-    _c("div", { staticClass: "card" }, [
-      _c("div", { staticClass: "card-body" }, [
-        _c("table", { staticClass: "table table-striped" }, [
-          _c(
-            "tbody",
-            _vm._l(_vm.report, function (item, name) {
-              return _c("tr", { key: name }, [
-                _c("th", [_vm._v(_vm._s(name))]),
-                _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(item))]),
-              ])
-            }),
-            0
-          ),
-        ]),
-      ]),
+    _c("table", { staticClass: "table table-striped" }, [
+      _c(
+        "tbody",
+        _vm._l(_vm.report, function (item, name) {
+          return _c("tr", { key: name }, [
+            _c("th", [_vm._v(_vm._s(name))]),
+            _vm._v(" "),
+            _c("td", [_vm._v(_vm._s(item))]),
+          ])
+        }),
+        0
+      ),
     ]),
     _vm._v(" "),
     _c(
