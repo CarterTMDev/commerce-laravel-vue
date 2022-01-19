@@ -48,6 +48,9 @@
                         <p v-if="error" class="text-danger">
                             An error occurred. Please try again.
                         </p>
+                        <p v-if="invalid" class="text-danger">
+                            {{ invalidMessage }}
+                        </p>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -72,7 +75,9 @@ export default {
                     return ['add', 'edit'].indexOf(val) !== -1;
                 }
             },
-            error: false
+            error: false,
+            invalid: false,
+            invalidMessage: ""
         }
     },
     props: {
@@ -88,9 +93,14 @@ export default {
     methods: {
         async onSubmit() {
             this.error = false;
-            let valid = true;
-            // TODO: Validate input
-            if (valid) {
+            this.validateInput();
+            if (!this.invalid) {
+                // If the email isn't null, set it to all lower-case
+                if (this.customerEdit['email'] !== null) {
+                    this.customerEdit['email'] = this.customerEdit['email'].toString().toLowerCase();
+                }
+                // Process the customer data
+                let success = true;
                 switch (this.mode) {
                     case "edit":
                         // Store all changed customer info in newCustomer object
@@ -105,17 +115,17 @@ export default {
                         }
                         // Don't bother the API if nothing changed
                         if (Object.keys(newCustomer).length !== 0) {
-                            valid = await this.updateCustomer(newCustomer, this.customer.id);
+                            success = await this.updateCustomer(newCustomer, this.customer.id);
                         }
-                        if (valid) {
+                        if (success) {
                             this.closeModal();
                         } else {
                             this.error = true;
                         }
                         break;
                     case "add":
-                        valid = await this.addCustomer(this.customerEdit);
-                        if (valid) {
+                        success = await this.addCustomer(this.customerEdit);
+                        if (success) {
                             this.closeModal();
                         } else {
                             this.error = true;
@@ -172,6 +182,32 @@ export default {
         },
         closeModal() {
             this.$refs.modalCloseBtn.click();
+        },
+        validateInput() {
+            this.invalid = false;
+            this.invalidMessage = "";
+            // strings: limit to 255
+            if (this.customerEdit['first_name'].toString().length > 255
+                    || this.customerEdit['last_name'].toString().length > 255
+                    || this.customerEdit['email'].toString().length > 255
+                    || this.customerEdit['address_1'].toString().length > 255
+                    || this.customerEdit['address_2'].toString().length > 255
+                    || this.customerEdit['city'].toString().length > 255
+                    || this.customerEdit['state'].toString().length > 255
+                    || this.customerEdit['zipcode'].toString().length > 255
+                    || this.customerEdit['country'].toString().length > 255) {
+                this.invalidMessage = "No text field should have more than 255 characters.";
+                this.invalid = true;
+            }
+            // check email
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!this.customerEdit['email'].toString().match(emailRegex)) {
+                if (this.invalidMessage.length != 0) {
+                    this.invalidMessage += " ";
+                }
+                this.invalidMessage += "Invalid email address.";
+                this.invalid = true;
+            }
         }
     },
     watch: {

@@ -5509,6 +5509,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -5520,7 +5523,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           return ['add', 'edit'].indexOf(val) !== -1;
         }
       },
-      error: false
+      error: false,
+      invalid: false,
+      invalidMessage: ""
     };
   },
   props: {
@@ -5538,24 +5543,32 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
-        var valid, newCustomer, key, element;
+        var success, newCustomer, key, element;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
                 _this.error = false;
-                valid = true; // TODO: Validate input
 
-                if (!valid) {
-                  _context.next = 19;
+                _this.validateInput();
+
+                if (_this.invalid) {
+                  _context.next = 21;
                   break;
                 }
 
+                // If the email isn't null, set it to all lower-case
+                if (_this.customerEdit['email'] !== null) {
+                  _this.customerEdit['email'] = _this.customerEdit['email'].toString().toLowerCase();
+                } // Process the customer data
+
+
+                success = true;
                 _context.t0 = _this.mode;
-                _context.next = _context.t0 === "edit" ? 6 : _context.t0 === "add" ? 14 : 19;
+                _context.next = _context.t0 === "edit" ? 8 : _context.t0 === "add" ? 16 : 21;
                 break;
 
-              case 6:
+              case 8:
                 // Store all changed customer info in newCustomer object
                 newCustomer = {};
 
@@ -5571,41 +5584,41 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
                 if (!(Object.keys(newCustomer).length !== 0)) {
-                  _context.next = 12;
+                  _context.next = 14;
                   break;
                 }
 
-                _context.next = 11;
+                _context.next = 13;
                 return _this.updateCustomer(newCustomer, _this.customer.id);
 
-              case 11:
-                valid = _context.sent;
-
-              case 12:
-                if (valid) {
-                  _this.closeModal();
-                } else {
-                  _this.error = true;
-                }
-
-                return _context.abrupt("break", 19);
+              case 13:
+                success = _context.sent;
 
               case 14:
-                _context.next = 16;
-                return _this.addCustomer(_this.customerEdit);
-
-              case 16:
-                valid = _context.sent;
-
-                if (valid) {
+                if (success) {
                   _this.closeModal();
                 } else {
                   _this.error = true;
                 }
 
-                return _context.abrupt("break", 19);
+                return _context.abrupt("break", 21);
 
-              case 19:
+              case 16:
+                _context.next = 18;
+                return _this.addCustomer(_this.customerEdit);
+
+              case 18:
+                success = _context.sent;
+
+                if (success) {
+                  _this.closeModal();
+                } else {
+                  _this.error = true;
+                }
+
+                return _context.abrupt("break", 21);
+
+              case 21:
               case "end":
                 return _context.stop();
             }
@@ -5695,6 +5708,27 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     closeModal: function closeModal() {
       this.$refs.modalCloseBtn.click();
+    },
+    validateInput: function validateInput() {
+      this.invalid = false;
+      this.invalidMessage = ""; // strings: limit to 255
+
+      if (this.customerEdit['first_name'].toString().length > 255 || this.customerEdit['last_name'].toString().length > 255 || this.customerEdit['email'].toString().length > 255 || this.customerEdit['address_1'].toString().length > 255 || this.customerEdit['address_2'].toString().length > 255 || this.customerEdit['city'].toString().length > 255 || this.customerEdit['state'].toString().length > 255 || this.customerEdit['zipcode'].toString().length > 255 || this.customerEdit['country'].toString().length > 255) {
+        this.invalidMessage = "No text field should have more than 255 characters.";
+        this.invalid = true;
+      } // check email
+
+
+      var emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+      if (!this.customerEdit['email'].toString().match(emailRegex)) {
+        if (this.invalidMessage.length != 0) {
+          this.invalidMessage += " ";
+        }
+
+        this.invalidMessage += "Invalid email address.";
+        this.invalid = true;
+      }
     }
   },
   watch: {
@@ -6086,6 +6120,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -6097,7 +6134,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           return ['add', 'edit'].indexOf(val) !== -1;
         }
       },
-      error: false
+      error: false,
+      invalid: false,
+      invalidMessage: ""
     };
   },
   props: {
@@ -6115,24 +6154,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
-        var valid, newOrder, key, element;
+        var success, newOrder, key, element;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
                 _this.error = false;
-                valid = true; // Input is validated in form by browser defaults
 
-                if (!valid) {
-                  _context.next = 19;
+                _this.validateInput();
+
+                if (_this.invalid) {
+                  _context.next = 20;
                   break;
                 }
 
+                success = true;
                 _context.t0 = _this.mode;
-                _context.next = _context.t0 === "edit" ? 6 : _context.t0 === "add" ? 14 : 19;
+                _context.next = _context.t0 === "edit" ? 7 : _context.t0 === "add" ? 15 : 20;
                 break;
 
-              case 6:
+              case 7:
                 // Store all changed order info in newOrder object
                 newOrder = {};
 
@@ -6148,41 +6189,41 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
                 if (!(Object.keys(newOrder).length !== 0)) {
-                  _context.next = 12;
+                  _context.next = 13;
                   break;
                 }
 
-                _context.next = 11;
+                _context.next = 12;
                 return _this.updateOrder(newOrder, _this.order.id);
 
-              case 11:
-                valid = _context.sent;
-
               case 12:
-                if (valid) {
+                success = _context.sent;
+
+              case 13:
+                if (success) {
                   _this.closeModal();
                 } else {
                   _this.error = true;
                 }
 
-                return _context.abrupt("break", 19);
+                return _context.abrupt("break", 20);
 
-              case 14:
-                _context.next = 16;
+              case 15:
+                _context.next = 17;
                 return _this.addOrder(_this.orderEdit);
 
-              case 16:
-                valid = _context.sent;
+              case 17:
+                success = _context.sent;
 
-                if (valid) {
+                if (success) {
                   _this.closeModal();
                 } else {
                   _this.error = true;
                 }
 
-                return _context.abrupt("break", 19);
+                return _context.abrupt("break", 20);
 
-              case 19:
+              case 20:
               case "end":
                 return _context.stop();
             }
@@ -6272,11 +6313,40 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     closeModal: function closeModal() {
       this.$refs.modalCloseBtn.click();
+    },
+    validateInput: function validateInput() {
+      this.invalid = false;
+      this.invalidMessage = ""; // id: limit to max BIGINT value
+
+      if (Number(this.orderEdit['customer_id']) > 18446744073709551615) {
+        // The user shouldn't be able to trigger this because the UI
+        // doesn't let you manually set customer_id
+        this.invalid = true;
+        this.error = true;
+      } // floats: 8 digits with 2 precision, limit to < 999999.99
+
+
+      if (Number(this.orderEdit['initial_cost']) > 999999.99 || Number(this.orderEdit['shipping_cost']) > 999999.99) {
+        this.invalid = true;
+        this.invalidMessage = "Maximum amount for shipping or initial cost is $999,999.99";
+      } // boolean
+
+
+      if (this.orderEdit['isShipped'] !== true && this.orderEdit['isShipped'] !== false) {
+        console.log(this.orderEdit['isShipped']); // Again, the user shouldn't be able to spoof a checkbox's value
+
+        this.invalid = true;
+        this.error = true;
+      }
     }
   },
   watch: {
     order: function order() {
       this.orderEdit = JSON.parse(JSON.stringify(this.order));
+
+      if (this.orderEdit['isShipped'] === null) {
+        this.orderEdit['isShipped'] = false;
+      }
     }
   }
 });
@@ -30642,6 +30712,16 @@ var render = function () {
                         ),
                       ])
                     : _vm._e(),
+                  _vm._v(" "),
+                  _vm.invalid
+                    ? _c("p", { staticClass: "text-danger" }, [
+                        _vm._v(
+                          "\n                        " +
+                            _vm._s(_vm.invalidMessage) +
+                            "\n                    "
+                        ),
+                      ])
+                    : _vm._e(),
                 ]),
               ]),
               _vm._v(" "),
@@ -31167,6 +31247,16 @@ var render = function () {
                     ? _c("p", { staticClass: "text-danger" }, [
                         _vm._v(
                           "\n                        An error occurred. Please try again.\n                    "
+                        ),
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.invalid
+                    ? _c("p", { staticClass: "text-danger" }, [
+                        _vm._v(
+                          "\n                        " +
+                            _vm._s(_vm.invalidMessage) +
+                            "\n                    "
                         ),
                       ])
                     : _vm._e(),

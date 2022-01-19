@@ -34,6 +34,9 @@
                         <p v-if="error" class="text-danger">
                             An error occurred. Please try again.
                         </p>
+                        <p v-if="invalid" class="text-danger">
+                            {{ invalidMessage }}
+                        </p>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -58,7 +61,9 @@ export default {
                     return ['add', 'edit'].indexOf(val) !== -1;
                 }
             },
-            error: false
+            error: false,
+            invalid: false,
+            invalidMessage: ""
         }
     },
     props: {
@@ -74,9 +79,9 @@ export default {
     methods: {
         async onSubmit() {
             this.error = false;
-            let valid = true;
-            // Input is validated in form by browser defaults
-            if (valid) {
+            this.validateInput();
+            if (!this.invalid) {
+                let success = true;
                 switch (this.mode) {
                     case "edit":
                         // Store all changed order info in newOrder object
@@ -91,17 +96,17 @@ export default {
                         }
                         // Don't bother the API if nothing changed
                         if (Object.keys(newOrder).length !== 0) {
-                            valid = await this.updateOrder(newOrder, this.order.id);
+                            success = await this.updateOrder(newOrder, this.order.id);
                         }
-                        if (valid) {
+                        if (success) {
                             this.closeModal();
                         } else {
                             this.error = true;
                         }
                         break;
                     case "add":
-                        valid = await this.addOrder(this.orderEdit);
-                        if (valid) {
+                        success = await this.addOrder(this.orderEdit);
+                        if (success) {
                             this.closeModal();
                         } else {
                             this.error = true;
@@ -158,11 +163,37 @@ export default {
         },
         closeModal() {
             this.$refs.modalCloseBtn.click();
+        },
+        validateInput() {
+            this.invalid = false;
+            this.invalidMessage = "";
+            // id: limit to max BIGINT value
+            if (Number(this.orderEdit['customer_id']) > 18446744073709551615) {
+                // The user shouldn't be able to trigger this because the UI
+                // doesn't let you manually set customer_id
+                this.invalid = true;
+                this.error = true;
+            }
+            // floats: 8 digits with 2 precision, limit to < 999999.99
+            if (Number(this.orderEdit['initial_cost']) > 999999.99
+                    || Number(this.orderEdit['shipping_cost']) > 999999.99) {
+                this.invalid = true;
+                this.invalidMessage = "Maximum amount for shipping or initial cost is $999,999.99";
+            }
+            // boolean
+            if (this.orderEdit['isShipped'] !== true && this.orderEdit['isShipped'] !== false) {
+                // Again, the user shouldn't be able to spoof a checkbox's value
+                this.invalid = true;
+                this.error = true;
+            }
         }
     },
     watch: {
         order: function() {
             this.orderEdit = JSON.parse(JSON.stringify(this.order));
+            if (this.orderEdit['isShipped'] === null) {
+                this.orderEdit['isShipped'] = false;
+            }
         }
     }
 }
