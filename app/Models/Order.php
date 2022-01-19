@@ -14,4 +14,14 @@ class Order extends Model
         'initial_cost',
         'shipping_cost'
     ];
+
+    public function makeEmpty()
+    {
+        $empty = [];
+        $_fillable = (new Order())->getFillable();
+        foreach ($_fillable as $value) {
+            $empty[$value] = null;
+        }
+        return $empty;
+    }
 }

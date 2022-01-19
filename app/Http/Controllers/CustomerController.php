@@ -33,6 +33,7 @@ class CustomerController extends Controller
         $customerAttr = $customer->getFillable();
         $valid = true;
         // TODO: If request has an unexpected input item key, $valid = false
+        //          Use $request->input() to get all input items
         foreach ($customerAttr as $attr) {
             if ($request->has($attr)) {
                 $value = $request->input($attr);
@@ -88,6 +89,7 @@ class CustomerController extends Controller
             $updatedAttr = [];
             $valid = true;
             // TODO: If request has an unexpected input item key, $valid = false
+            //          Use $request->input() to get all input items
             foreach ($customerAttr as $key => $value) {
                 if ($request->has($key)) {
                     $column = $request->input($key);
@@ -128,5 +130,11 @@ class CustomerController extends Controller
         } else {
             return response()->json([], 400);
         }
+    }
+
+    public function orders(Request $request, $id)
+    {
+        $customer = Customer::findOrFail($id);
+        return $customer->orders;
     }
 }

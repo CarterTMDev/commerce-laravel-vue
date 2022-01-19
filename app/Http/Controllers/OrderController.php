@@ -33,6 +33,7 @@ class OrderController extends Controller
         $orderAttr = $order->getFillable();
         $valid = true;
         // TODO: If request has an unexpected input item key, $valid = false
+        //          Use $request->input() to get all input items
         foreach ($orderAttr as $attr) {
             if ($request->has($attr)) {
                 $value = $request->input($attr);
@@ -83,6 +84,7 @@ class OrderController extends Controller
             $updatedAttr = [];
             $valid = true;
             // TODO: If request has an unexpected input item key, $valid = false
+            //          Use $request->input() to get all input items
             foreach ($orderAttr as $key => $value) {
                 if ($request->has($key)) {
                     $column = $request->input($key);
