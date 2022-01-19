@@ -5334,6 +5334,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -5619,6 +5621,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _OrdersModal_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./OrdersModal.vue */ "./resources/js/components/OrdersModal.vue");
 /* harmony import */ var _WarningModal_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./WarningModal.vue */ "./resources/js/components/WarningModal.vue");
+//
 //
 //
 //
@@ -28914,8 +28917,13 @@ var render = function () {
   var _c = _vm._self._c || _h
   return _c(
     "div",
+    { staticClass: "pt-3" },
     [
-      _c("table", { staticClass: "table" }, [
+      _c("h3", [_vm._v("Customers")]),
+      _vm._v(" "),
+      _c("p", [_vm._v("Click on a customer to view their orders")]),
+      _vm._v(" "),
+      _c("table", { staticClass: "table table-hover" }, [
         _vm._m(0),
         _vm._v(" "),
         _c(
@@ -28947,6 +28955,9 @@ var render = function () {
                   {
                     on: {
                       click: function ($event) {
+                        $event.stopPropagation()
+                      },
+                      mouseover: function ($event) {
                         $event.stopPropagation()
                       },
                     },
@@ -29529,6 +29540,7 @@ var render = function () {
   var _c = _vm._self._c || _h
   return _c(
     "div",
+    { staticClass: "pt-3" },
     [
       _c("h3", [
         _vm._v(
@@ -29537,7 +29549,9 @@ var render = function () {
         ),
       ]),
       _vm._v(" "),
-      _c("table", { staticClass: "table" }, [
+      _c("p", [_vm._v("Click on an order to view its report")]),
+      _vm._v(" "),
+      _c("table", { staticClass: "table table-hover" }, [
         _vm._m(0),
         _vm._v(" "),
         _c(

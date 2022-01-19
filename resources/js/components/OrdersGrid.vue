@@ -1,7 +1,8 @@
 <template>
-<div>
+<div class="pt-3">
     <h3>Orders for {{ customer.first_name + ' ' + customer.last_name }}</h3>
-    <table class="table">
+    <p>Click on an order to view its report</p>
+    <table class="table table-hover">
         <thead>
             <tr>
                 <th>Order placed</th>

@@ -1,6 +1,8 @@
 <template>
-<div>
-    <table class="table">
+<div class="pt-3">
+    <h3>Customers</h3>
+    <p>Click on a customer to view their orders</p>
+    <table class="table table-hover">
         <thead>
             <tr>
                 <th>Name</th>
