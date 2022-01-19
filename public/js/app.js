@@ -5353,7 +5353,7 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     var _this = this;
 
-    fetch('/api/customer').then(function (res) {
+    fetch(window.location.origin + '/api/customers').then(function (res) {
       return res.json();
     }).then(function (res) {
       return _this.customers = res;
@@ -5370,7 +5370,10 @@ __webpack_require__.r(__webpack_exports__);
       return address;
     },
     selectCustomer: function selectCustomer(customer) {
-      window.location.href = '/customer/' + customer.id;
+      window.location.href = 'customers/' + customer.id;
+    },
+    addCustomer: function addCustomer(customer) {
+      this.customers.push(customer);
     },
     updateCustomer: function updateCustomer(customer) {
       this.editCustomer = customer;
@@ -5382,13 +5385,9 @@ __webpack_require__.r(__webpack_exports__);
         }
       }
     },
-    addCustomer: function addCustomer(customer) {
-      this.customers.push(customer);
-    },
     deleteCustomer: function deleteCustomer() {
-      // TODO: Fetch DELETE to delete editCustomer.id
       var success = true;
-      fetch('/api/customer/' + this.editCustomer.id, {
+      fetch(window.location.origin + '/api/customers/' + this.editCustomer.id, {
         method: 'DELETE'
       }).then(function (res) {
         return res.json();
@@ -5565,7 +5564,7 @@ __webpack_require__.r(__webpack_exports__);
           'Content-Type': 'application/json'
         }
       };
-      fetch('api/customer/' + customerId, request).then(function (res) {
+      fetch(window.location.origin + '/api/customers/' + customerId, request).then(function (res) {
         return res.json();
       }).then(function (res) {
         return _this.$emit("update:customer", res);
@@ -5583,7 +5582,7 @@ __webpack_require__.r(__webpack_exports__);
           'Content-Type': 'application/json'
         }
       };
-      fetch('api/customer', request).then(function (res) {
+      fetch(window.location.origin + '/api/customers', request).then(function (res) {
         return res.json();
       }).then(function (res) {
         return _this2.$emit("add:customer", res);
@@ -5607,10 +5606,186 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ExampleComponent.vue?vue&type=script&lang=js&":
-/*!***********************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ExampleComponent.vue?vue&type=script&lang=js& ***!
-  \***********************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/OrdersGrid.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/OrdersGrid.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _OrdersModal_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./OrdersModal.vue */ "./resources/js/components/OrdersModal.vue");
+/* harmony import */ var _WarningModal_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./WarningModal.vue */ "./resources/js/components/WarningModal.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  components: {
+    OrdersModal: _OrdersModal_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
+    WarningModal: _WarningModal_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
+  data: function data() {
+    return {
+      customer: {},
+      orders: [],
+      editOrder: JSON.parse(JSON.stringify(this.order))
+    };
+  },
+  props: {
+    customerId: Number,
+    order: Object
+  },
+  created: function created() {
+    var _this = this;
+
+    // Get an updated version of the customer's data
+    // (in case their data was changed between now and whenever
+    // customer data was last retrieved)
+    fetch(window.location.origin + '/api/customers/' + this.customerId).then(function (res) {
+      return res.json();
+    }).then(function (res) {
+      return _this.customer = res;
+    }).then(function () {
+      return _this.editOrder.customer_id = _this.customerId;
+    }).then(fetch(window.location.origin + '/api/customers/' + this.customerId + '/orders').then(function (res) {
+      return res.json();
+    }).then(function (res) {
+      return _this.orders = res;
+    })["catch"](function (error) {
+      console.log(error);
+    }))["catch"](function (error) {
+      console.log(error);
+    });
+  },
+  methods: {
+    selectOrder: function selectOrder(order) {
+      window.location.href = '/order/' + order.id;
+    },
+    addOrder: function addOrder(order) {
+      this.orders.push(order);
+    },
+    updateOrder: function updateOrder(order) {
+      this.editOrder = order;
+
+      for (var i = 0; i < this.orders.length; i++) {
+        if (this.orders[i].id === order.id) {
+          this.orders[i] = order;
+          break;
+        }
+      }
+    },
+    deleteOrder: function deleteOrder() {
+      var success = true;
+      fetch(window.location.origin + '/api/orders/' + this.editOrder.id, {
+        method: 'DELETE'
+      }).then(function (res) {
+        return res.json();
+      })["catch"](function (error) {
+        return console.log(error);
+      }); // TODO: Handle failed requests
+
+      if (success) {
+        // Remove deleted order from orders
+        for (var i = 0; i < this.orders.length; i++) {
+          if (this.orders[i].id === this.editOrder.id) {
+            this.orders.splice(i, 1);
+            break;
+          }
+        } // Set editOrder to the empty order object
+
+
+        this.editOrder = this.order;
+        this.editOrder.customer_id = this.customerId;
+      }
+    },
+    timestampToDateTime: function timestampToDateTime(timestamp) {
+      var date = new Date(timestamp);
+      return date.toDateString();
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/OrdersModal.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/OrdersModal.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************************************************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -5634,9 +5809,154 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      orderEdit: JSON.parse(JSON.stringify(this.order)),
+      mode: {
+        type: String,
+        "default": 'add',
+        validator: function validator(val) {
+          return ['add', 'edit'].indexOf(val) !== -1;
+        }
+      }
+    };
+  },
+  props: {
+    order: Object,
+    id: {
+      type: String,
+      required: true
+    }
+  },
   mounted: function mounted() {
-    console.log('Component mounted.');
+    this.$parent.$on('modal:mode', this.setMode);
+  },
+  methods: {
+    onSubmit: function onSubmit() {
+      var valid = true; // TODO: Validate input
+
+      if (valid) {
+        var success = true;
+
+        switch (this.mode) {
+          case "edit":
+            // TODO: Check if order info has been changed
+            var newOrder = {};
+
+            for (var key in this.orderEdit) {
+              if (Object.hasOwnProperty.call(this.orderEdit, key)) {
+                var element = this.orderEdit[key];
+
+                if (element !== this.order[key]) {
+                  newOrder[key] = element;
+                }
+              }
+            } // Don't bother the API if nothing changed
+
+
+            if (Object.keys(newOrder).length !== 0) {
+              // Fetch patch request to update order
+              this.updateOrder(newOrder, this.order.id);
+            } // TODO: Handle failed requests
+
+
+            if (success) {
+              this.closeModal();
+            }
+
+            break;
+
+          case "add":
+            this.addOrder(this.orderEdit); // TODO: Handle failed requests
+
+            if (success) {
+              this.closeModal();
+            }
+
+            break;
+        }
+      }
+    },
+    updateOrder: function updateOrder(updatedOrder, orderId) {
+      var _this = this;
+
+      var method = "PATCH";
+      var request = {
+        'method': method,
+        body: JSON.stringify(updatedOrder),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+      fetch(window.location.origin + '/api/orders/' + orderId, request).then(function (res) {
+        return res.json();
+      }).then(function (res) {
+        return _this.$emit("update:order", res);
+      })["catch"](function (error) {
+        return console.log(error);
+      });
+    },
+    addOrder: function addOrder(newOrder) {
+      var _this2 = this;
+
+      var request = {
+        method: "POST",
+        body: JSON.stringify(newOrder),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+      fetch(window.location.origin + '/api/orders', request).then(function (res) {
+        return res.json();
+      }).then(function (res) {
+        return _this2.$emit("add:order", res);
+      })["catch"](function (error) {
+        return console.log(error);
+      });
+    },
+    setMode: function setMode(newMode) {
+      this.mode = newMode;
+    },
+    closeModal: function closeModal() {
+      this.$refs.modalCloseBtn.click();
+    }
+  },
+  watch: {
+    order: function order() {
+      this.orderEdit = JSON.parse(JSON.stringify(this.order));
+    }
   }
 });
 
@@ -28294,10 +28614,10 @@ component.options.__file = "resources/js/components/CustomersModal.vue"
 
 /***/ }),
 
-/***/ "./resources/js/components/ExampleComponent.vue":
-/*!******************************************************!*\
-  !*** ./resources/js/components/ExampleComponent.vue ***!
-  \******************************************************/
+/***/ "./resources/js/components/OrdersGrid.vue":
+/*!************************************************!*\
+  !*** ./resources/js/components/OrdersGrid.vue ***!
+  \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -28305,8 +28625,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ExampleComponent.vue?vue&type=template&id=299e239e& */ "./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e&");
-/* harmony import */ var _ExampleComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ExampleComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/ExampleComponent.vue?vue&type=script&lang=js&");
+/* harmony import */ var _OrdersGrid_vue_vue_type_template_id_29f39214___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./OrdersGrid.vue?vue&type=template&id=29f39214& */ "./resources/js/components/OrdersGrid.vue?vue&type=template&id=29f39214&");
+/* harmony import */ var _OrdersGrid_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./OrdersGrid.vue?vue&type=script&lang=js& */ "./resources/js/components/OrdersGrid.vue?vue&type=script&lang=js&");
 /* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -28316,9 +28636,9 @@ __webpack_require__.r(__webpack_exports__);
 /* normalize component */
 ;
 var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _ExampleComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__.render,
-  _ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  _OrdersGrid_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _OrdersGrid_vue_vue_type_template_id_29f39214___WEBPACK_IMPORTED_MODULE_0__.render,
+  _OrdersGrid_vue_vue_type_template_id_29f39214___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
   false,
   null,
   null,
@@ -28328,7 +28648,46 @@ var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__
 
 /* hot reload */
 if (false) { var api; }
-component.options.__file = "resources/js/components/ExampleComponent.vue"
+component.options.__file = "resources/js/components/OrdersGrid.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/OrdersModal.vue":
+/*!*************************************************!*\
+  !*** ./resources/js/components/OrdersModal.vue ***!
+  \*************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _OrdersModal_vue_vue_type_template_id_a539f4a6___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./OrdersModal.vue?vue&type=template&id=a539f4a6& */ "./resources/js/components/OrdersModal.vue?vue&type=template&id=a539f4a6&");
+/* harmony import */ var _OrdersModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./OrdersModal.vue?vue&type=script&lang=js& */ "./resources/js/components/OrdersModal.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _OrdersModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _OrdersModal_vue_vue_type_template_id_a539f4a6___WEBPACK_IMPORTED_MODULE_0__.render,
+  _OrdersModal_vue_vue_type_template_id_a539f4a6___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/OrdersModal.vue"
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
 
 /***/ }),
@@ -28404,10 +28763,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/components/ExampleComponent.vue?vue&type=script&lang=js&":
-/*!*******************************************************************************!*\
-  !*** ./resources/js/components/ExampleComponent.vue?vue&type=script&lang=js& ***!
-  \*******************************************************************************/
+/***/ "./resources/js/components/OrdersGrid.vue?vue&type=script&lang=js&":
+/*!*************************************************************************!*\
+  !*** ./resources/js/components/OrdersGrid.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -28415,8 +28774,24 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ExampleComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./ExampleComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ExampleComponent.vue?vue&type=script&lang=js&");
- /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ExampleComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_OrdersGrid_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./OrdersGrid.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/OrdersGrid.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_OrdersGrid_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/OrdersModal.vue?vue&type=script&lang=js&":
+/*!**************************************************************************!*\
+  !*** ./resources/js/components/OrdersModal.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_OrdersModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./OrdersModal.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/OrdersModal.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_OrdersModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
@@ -28470,19 +28845,36 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e&":
-/*!*************************************************************************************!*\
-  !*** ./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e& ***!
-  \*************************************************************************************/
+/***/ "./resources/js/components/OrdersGrid.vue?vue&type=template&id=29f39214&":
+/*!*******************************************************************************!*\
+  !*** ./resources/js/components/OrdersGrid.vue?vue&type=template&id=29f39214& ***!
+  \*******************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__.render),
-/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_OrdersGrid_vue_vue_type_template_id_29f39214___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_OrdersGrid_vue_vue_type_template_id_29f39214___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./ExampleComponent.vue?vue&type=template&id=299e239e& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e&");
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_OrdersGrid_vue_vue_type_template_id_29f39214___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./OrdersGrid.vue?vue&type=template&id=29f39214& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/OrdersGrid.vue?vue&type=template&id=29f39214&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/OrdersModal.vue?vue&type=template&id=a539f4a6&":
+/*!********************************************************************************!*\
+  !*** ./resources/js/components/OrdersModal.vue?vue&type=template&id=a539f4a6& ***!
+  \********************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_OrdersModal_vue_vue_type_template_id_a539f4a6___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_OrdersModal_vue_vue_type_template_id_a539f4a6___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_OrdersModal_vue_vue_type_template_id_a539f4a6___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./OrdersModal.vue?vue&type=template&id=a539f4a6& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/OrdersModal.vue?vue&type=template&id=a539f4a6&");
 
 
 /***/ }),
@@ -29119,10 +29511,10 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e&":
-/*!****************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e& ***!
-  \****************************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/OrdersGrid.vue?vue&type=template&id=29f39214&":
+/*!**********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/OrdersGrid.vue?vue&type=template&id=29f39214& ***!
+  \**********************************************************************************************************************************************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -29135,32 +29527,440 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c(
+    "div",
+    [
+      _c("h3", [
+        _vm._v(
+          "Orders for " +
+            _vm._s(_vm.customer.first_name + " " + _vm.customer.last_name)
+        ),
+      ]),
+      _vm._v(" "),
+      _c("table", { staticClass: "table" }, [
+        _vm._m(0),
+        _vm._v(" "),
+        _c(
+          "tbody",
+          _vm._l(_vm.orders, function (order) {
+            return _c(
+              "tr",
+              {
+                key: order.id,
+                on: {
+                  click: function ($event) {
+                    return _vm.selectOrder(order)
+                  },
+                },
+              },
+              [
+                _c("td", [
+                  _vm._v(_vm._s(_vm.timestampToDateTime(order.created_at))),
+                ]),
+                _vm._v(" "),
+                _c("td", [
+                  _vm._v("$" + _vm._s(Number(order.initial_cost).toFixed(2))),
+                ]),
+                _vm._v(" "),
+                _c("td", [
+                  _vm._v("$" + _vm._s(Number(order.shipping_cost).toFixed(2))),
+                ]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(order.isShipped ? "Yes" : "No"))]),
+                _vm._v(" "),
+                _c(
+                  "td",
+                  {
+                    on: {
+                      click: function ($event) {
+                        $event.stopPropagation()
+                      },
+                    },
+                  },
+                  [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: {
+                          "data-bs-toggle": "modal",
+                          "data-bs-target": "#ordersModal",
+                        },
+                        on: {
+                          click: function ($event) {
+                            _vm.editOrder = order
+                            _vm.$emit("modal:mode", "edit")
+                          },
+                        },
+                      },
+                      [
+                        _vm._v(
+                          "\n                        Edit\n                    "
+                        ),
+                      ]
+                    ),
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "td",
+                  {
+                    on: {
+                      click: function ($event) {
+                        $event.stopPropagation()
+                      },
+                    },
+                  },
+                  [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-danger",
+                        attrs: {
+                          "data-bs-toggle": "modal",
+                          "data-bs-target": "#deleteModal",
+                        },
+                        on: {
+                          click: function ($event) {
+                            _vm.editOrder = order
+                          },
+                        },
+                      },
+                      [
+                        _vm._v(
+                          "\n                        Delete\n                    "
+                        ),
+                      ]
+                    ),
+                  ]
+                ),
+              ]
+            )
+          }),
+          0
+        ),
+      ]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-primary",
+          attrs: {
+            "data-bs-toggle": "modal",
+            "data-bs-target": "#ordersModal",
+          },
+          on: {
+            click: function ($event) {
+              _vm.editOrder = _vm.order
+              _vm.editOrder.customer_id = _vm.customerId
+              _vm.$emit("modal:mode", "add")
+            },
+          },
+        },
+        [_vm._v("\n        Add order\n    ")]
+      ),
+      _vm._v(" "),
+      _c("orders-modal", {
+        attrs: { id: "ordersModal", order: _vm.editOrder },
+        on: { "update:order": _vm.updateOrder, "add:order": _vm.addOrder },
+      }),
+      _vm._v(" "),
+      _c("warning-modal", {
+        attrs: {
+          id: "deleteModal",
+          label: "Delete order",
+          message: "Are you sure you want to permanently delete this order?",
+        },
+        on: { "deleteModal:success": _vm.deleteOrder },
+      }),
+    ],
+    1
+  )
 }
 var staticRenderFns = [
   function () {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container" }, [
-      _c("div", { staticClass: "row justify-content-center" }, [
-        _c("div", { staticClass: "col-md-8" }, [
-          _c("div", { staticClass: "card" }, [
-            _c("div", { staticClass: "card-header" }, [
-              _vm._v("Example Component"),
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-body" }, [
-              _vm._v(
-                "\n                    I'm an example component.\n                "
-              ),
-            ]),
-          ]),
-        ]),
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Order placed")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Initial Price")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Shipping Cost")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Has Shipped")]),
       ]),
     ])
   },
 ]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/OrdersModal.vue?vue&type=template&id=a539f4a6&":
+/*!***********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/OrdersModal.vue?vue&type=template&id=a539f4a6& ***!
+  \***********************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function () {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "form",
+    {
+      on: {
+        submit: function ($event) {
+          $event.preventDefault()
+          return _vm.onSubmit.apply(null, arguments)
+        },
+        "modal:mode": function ($event) {
+          _vm.mode = $event
+        },
+      },
+    },
+    [
+      _c(
+        "div",
+        {
+          staticClass: "modal fade",
+          attrs: {
+            id: _vm.id,
+            tabindex: "-1",
+            "aria-labelledby": _vm.id + "Label",
+            "aria-hidden": "true",
+          },
+        },
+        [
+          _c("div", { staticClass: "modal-dialog" }, [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _c(
+                  "h5",
+                  {
+                    staticClass: "modal-title",
+                    attrs: { id: _vm.id + "Label" },
+                  },
+                  [
+                    _vm._v(
+                      _vm._s(_vm.mode === "add" ? "Add" : "Edit") + " Order"
+                    ),
+                  ]
+                ),
+                _vm._v(" "),
+                _c("button", {
+                  ref: "modalCloseBtn",
+                  staticClass: "btn-close",
+                  attrs: {
+                    type: "button",
+                    "data-bs-dismiss": "modal",
+                    "aria-label": "Close",
+                  },
+                }),
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "container" }, [
+                  _c("div", { staticClass: "row" }, [
+                    _c("div", { staticClass: "col" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "form-label",
+                          attrs: { for: "initial_cost" },
+                        },
+                        [_vm._v("Cost (before shipping)")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "input-group" }, [
+                        _c("span", { staticClass: "input-group-text" }, [
+                          _vm._v("$"),
+                        ]),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.orderEdit.initial_cost,
+                              expression: "orderEdit.initial_cost",
+                            },
+                          ],
+                          staticClass: "form-control",
+                          attrs: {
+                            id: "initial_cost",
+                            type: "number",
+                            placeholder: "",
+                            required: "",
+                          },
+                          domProps: { value: _vm.orderEdit.initial_cost },
+                          on: {
+                            input: function ($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.orderEdit,
+                                "initial_cost",
+                                $event.target.value
+                              )
+                            },
+                          },
+                        }),
+                      ]),
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "form-label",
+                          attrs: { for: "shipping_cost" },
+                        },
+                        [_vm._v("Shipping Cost")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "input-group" }, [
+                        _c("span", { staticClass: "input-group-text" }, [
+                          _vm._v("$"),
+                        ]),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.orderEdit.shipping_cost,
+                              expression: "orderEdit.shipping_cost",
+                            },
+                          ],
+                          staticClass: "form-control",
+                          attrs: {
+                            id: "shipping_cost",
+                            type: "number",
+                            placeholder: "",
+                            required: "",
+                          },
+                          domProps: { value: _vm.orderEdit.shipping_cost },
+                          on: {
+                            input: function ($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.orderEdit,
+                                "shipping_cost",
+                                $event.target.value
+                              )
+                            },
+                          },
+                        }),
+                      ]),
+                    ]),
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-check" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.orderEdit.isShipped,
+                          expression: "orderEdit.isShipped",
+                        },
+                      ],
+                      staticClass: "form-check-input",
+                      attrs: { type: "checkbox", id: "isShipped" },
+                      domProps: {
+                        checked: Array.isArray(_vm.orderEdit.isShipped)
+                          ? _vm._i(_vm.orderEdit.isShipped, null) > -1
+                          : _vm.orderEdit.isShipped,
+                      },
+                      on: {
+                        change: function ($event) {
+                          var $$a = _vm.orderEdit.isShipped,
+                            $$el = $event.target,
+                            $$c = $$el.checked ? true : false
+                          if (Array.isArray($$a)) {
+                            var $$v = null,
+                              $$i = _vm._i($$a, $$v)
+                            if ($$el.checked) {
+                              $$i < 0 &&
+                                _vm.$set(
+                                  _vm.orderEdit,
+                                  "isShipped",
+                                  $$a.concat([$$v])
+                                )
+                            } else {
+                              $$i > -1 &&
+                                _vm.$set(
+                                  _vm.orderEdit,
+                                  "isShipped",
+                                  $$a.slice(0, $$i).concat($$a.slice($$i + 1))
+                                )
+                            }
+                          } else {
+                            _vm.$set(_vm.orderEdit, "isShipped", $$c)
+                          }
+                        },
+                      },
+                    }),
+                    _vm._v(" "),
+                    _c(
+                      "label",
+                      {
+                        staticClass: "form-check-label",
+                        attrs: { for: "isShipped" },
+                      },
+                      [
+                        _vm._v(
+                          "\n                            Shipped\n                        "
+                        ),
+                      ]
+                    ),
+                  ]),
+                ]),
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-secondary",
+                    attrs: { type: "button", "data-bs-dismiss": "modal" },
+                  },
+                  [_vm._v("Close")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  { staticClass: "btn btn-primary", attrs: { type: "submit" } },
+                  [
+                    _vm._v(
+                      _vm._s(_vm.mode === "add" ? "Add order" : "Save changes")
+                    ),
+                  ]
+                ),
+              ]),
+            ]),
+          ]),
+        ]
+      ),
+    ]
+  )
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -41427,7 +42227,8 @@ Vue.compile = compileToFunctions;
 var map = {
 	"./components/CustomersGrid.vue": "./resources/js/components/CustomersGrid.vue",
 	"./components/CustomersModal.vue": "./resources/js/components/CustomersModal.vue",
-	"./components/ExampleComponent.vue": "./resources/js/components/ExampleComponent.vue",
+	"./components/OrdersGrid.vue": "./resources/js/components/OrdersGrid.vue",
+	"./components/OrdersModal.vue": "./resources/js/components/OrdersModal.vue",
 	"./components/WarningModal.vue": "./resources/js/components/WarningModal.vue"
 };
 

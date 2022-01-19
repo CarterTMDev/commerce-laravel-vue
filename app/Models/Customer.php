@@ -20,6 +20,15 @@ class Customer extends Model
         'country'
     ];
 
+    // Return the orders in the orders table for this customer
+    // Defines the one-to-many relationship automatically by the name
+    // of the function
+    // https://laravel.com/docs/8.x/eloquent-relationships#one-to-many
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
     public function makeEmpty()
     {
         $empty = [];

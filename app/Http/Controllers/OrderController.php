@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Customer;
+use App\Models\Order;
 use Illuminate\Http\Request;
 
-class CustomerController extends Controller
+class OrderController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,9 +14,9 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        // Retrieve customers from the table
-        $customers = Customer::all();
-        return $customers;
+        // Retrieve orders from the table
+        $orders = Order::all();
+        return $orders;
         // TODO: Paginate data
     }
 
@@ -29,25 +29,25 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         // Check for fillable values
-        $customer = new Customer();
-        $customerAttr = $customer->getFillable();
+        $order = new Order();
+        $orderAttr = $order->getFillable();
         $valid = true;
         // TODO: If request has an unexpected input item key, $valid = false
         //          Use $request->input() to get all input items
-        foreach ($customerAttr as $attr) {
+        foreach ($orderAttr as $attr) {
             if ($request->has($attr)) {
                 $value = $request->input($attr);
                 // TODO: input validation
-                $customer->setAttribute($attr, $value);
+                $order->setAttribute($attr, $value);
             } else {
                 $valid = false;
             }
         }
         if ($valid) {
-            // Save customer
-            if ($customer->save()) {
-                // Customer saved
-                return $customer;
+            // Save order
+            if ($order->save()) {
+                // Order saved
+                return $order;
             } else {
                 // Return 400
                 return response()->json([], 400);
@@ -61,36 +61,31 @@ class CustomerController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Customer  $customer
+     * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function show(Customer $customer)
+    public function show(Order $order)
     {
-        // Responds to /api/customer/{id}
-        // Returns the customer with that id if one exists
-        //  if not, returns 404 automatically
-        return $customer;
+        return $order;
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Customer  $customer
+     * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Customer $customer)
+    public function update(Request $request, Order $order)
     {
-        // This should only respond to patch requests since you shouldn't
-        // be able to update a customer's id, updated_at, or created_at columns
         if ($request->isMethod('PATCH')) {
             // Check for requested changes to fillable values
-            $customerAttr = $customer->getAttributes();
+            $orderAttr = $order->getAttributes();
             $updatedAttr = [];
             $valid = true;
             // TODO: If request has an unexpected input item key, $valid = false
             //          Use $request->input() to get all input items
-            foreach ($customerAttr as $key => $value) {
+            foreach ($orderAttr as $key => $value) {
                 if ($request->has($key)) {
                     $column = $request->input($key);
                     if ($column != $value) {
@@ -100,11 +95,11 @@ class CustomerController extends Controller
                 }
             }
             if (!empty($updatedAttr) && $valid) {
-                // Update customer
-                $customer->fill($updatedAttr);
-                // Save customer
-                if ($customer->save()) {
-                    return $customer;
+                // Update order
+                $order->fill($updatedAttr);
+                // Save order
+                if ($order->save()) {
+                    return $order;
                 } else {
                     return response()->json([], 400);
                 }
@@ -120,21 +115,15 @@ class CustomerController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Customer  $customer
+     * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Customer $customer)
+    public function destroy(Order $order)
     {
-        if ($customer->delete()) {
+        if ($order->delete()) {
             return response()->json();
         } else {
             return response()->json([], 400);
         }
-    }
-
-    public function orders(Request $request, $id)
-    {
-        $customer = Customer::findOrFail($id);
-        return $customer->orders;
     }
 }

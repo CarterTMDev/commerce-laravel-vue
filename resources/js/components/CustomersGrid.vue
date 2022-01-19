@@ -83,7 +83,7 @@ export default {
         customer: Object
     },
     created() {
-        fetch('/api/customer')
+        fetch(window.location.origin + '/api/customers')
             .then(res => res.json())
             .then(res => this.customers = res)
             .catch(error => console.log(error));
@@ -97,7 +97,10 @@ export default {
             return address;
         },
         selectCustomer(customer) {
-            window.location.href='/customer/' + customer.id;
+            window.location.href='customers/' + customer.id;
+        },
+        addCustomer(customer) {
+            this.customers.push(customer);
         },
         updateCustomer(customer) {
             this.editCustomer = customer;
@@ -108,13 +111,9 @@ export default {
                 }
             }
         },
-        addCustomer(customer) {
-            this.customers.push(customer);
-        },
         deleteCustomer() {
-            // TODO: Fetch DELETE to delete editCustomer.id
             let success = true;
-            fetch('/api/customer/' + this.editCustomer.id, {
+            fetch(window.location.origin + '/api/customers/' + this.editCustomer.id, {
                 method: 'DELETE'
             }).then(res => res.json())
             .catch(error => console.log(error));

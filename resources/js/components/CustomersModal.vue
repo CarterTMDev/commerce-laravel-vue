@@ -129,7 +129,7 @@ export default {
                     'Content-Type': 'application/json'
                 }
             };
-            fetch('api/customer/' + customerId, request)
+            fetch(window.location.origin + '/api/customers/' + customerId, request)
                 .then(res => res.json())
                 .then(res => this.$emit("update:customer", res))
                 .catch(error => console.log(error));
@@ -142,7 +142,7 @@ export default {
                     'Content-Type': 'application/json'
                 }
             };
-            fetch('api/customer', request)
+            fetch(window.location.origin + '/api/customers', request)
                 .then(res => res.json())
                 .then(res => this.$emit("add:customer", res))
                 .catch(error => console.log(error));
