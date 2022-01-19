@@ -27,6 +27,12 @@
                         data-bs-toggle="modal"
                         data-bs-target="#ordersModal"
                         @click="editOrder = order;
+                                if (editOrder.shipping_cost !== null) {
+                                    editOrder.shipping_cost = Number(editOrder.shipping_cost).toFixed(2);
+                                }
+                                if (editOrder.initial_cost !== null) {
+                                    editOrder.initial_cost = Number(editOrder.initial_cost).toFixed(2);
+                                }
                                 $emit('modal:mode', 'edit');"
                     >
                         Edit
@@ -125,24 +131,26 @@ export default {
             }
         },
         deleteOrder() {
-            let success = true;
             fetch(window.location.origin + '/api/orders/' + this.editOrder.id, {
                 method: 'DELETE'
-            }).then(res => res.json())
-            .catch(error => console.log(error));
-            // TODO: Handle failed requests
-            if (success) {
-                // Remove deleted order from orders
-                for (let i = 0; i < this.orders.length; i++) {
-                    if (this.orders[i].id === this.editOrder.id) {
-                        this.orders.splice(i, 1);
-                        break;
+            })
+            .then(res => res.ok)
+            .then(success => {
+                if (success) {
+                    // Remove deleted order from orders
+                    for (let i = 0; i < this.orders.length; i++) {
+                        if (this.orders[i].id === this.editOrder.id) {
+                            this.orders.splice(i, 1);
+                            break;
+                        }
                     }
+                    // Set editOrder to the empty order object
+                    this.editOrder = this.order;
+                    this.editOrder.customer_id = this.customerId;
+                } else {
+                    alert("An error occurred. Please try again.");
                 }
-                // Set editOrder to the empty order object
-                this.editOrder = this.order;
-                this.editOrder.customer_id = this.customerId;
-            }
+            });
         },
         timestampToDateTime(timestamp) {
             let date = new Date(timestamp);

@@ -14,18 +14,16 @@
                                 <label for="initial_cost" class="form-label">Cost (before shipping)</label>
                                 <div class="input-group">
                                     <span class="input-group-text">$</span>
-                                    <input v-model="orderEdit.initial_cost" id="initial_cost" type="number" class="form-control" placeholder="" required>
+                                    <input v-model="orderEdit.initial_cost" id="initial_cost" type="number" step="0.01" class="form-control" placeholder="" required>
                                 </div>
                             </div>
                             <div class="col">
                                 <label for="shipping_cost" class="form-label">Shipping Cost</label>
                                 <div class="input-group">
                                     <span class="input-group-text">$</span>
-                                    <input v-model="orderEdit.shipping_cost" id="shipping_cost" type="number" class="form-control" placeholder="" required>
+                                    <input v-model="orderEdit.shipping_cost" id="shipping_cost" type="number" step="0.01" class="form-control" placeholder="" required>
                                 </div>
                             </div>
-                            <!-- TODO: Select items purchased -->
-                            <!-- TODO: Restrict currency inputs to 2 decimal places and no leading zeros -->
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" v-model="orderEdit.isShipped" id="isShipped">
@@ -33,6 +31,9 @@
                                 Shipped
                             </label>
                         </div>
+                        <p v-if="error" class="text-danger">
+                            An error occurred. Please try again.
+                        </p>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -56,7 +57,8 @@ export default {
                 validator: function(val) {
                     return ['add', 'edit'].indexOf(val) !== -1;
                 }
-            }
+            },
+            error: false
         }
     },
     props: {
@@ -70,14 +72,14 @@ export default {
         this.$parent.$on('modal:mode', this.setMode);
     },
     methods: {
-        onSubmit() {
+        async onSubmit() {
+            this.error = false;
             let valid = true;
-            // TODO: Validate input
+            // Input is validated in form by browser defaults
             if (valid) {
-                let success = true;
                 switch (this.mode) {
                     case "edit":
-                        // TODO: Check if order info has been changed
+                        // Store all changed order info in newOrder object
                         let newOrder = {};
                         for (const key in this.orderEdit) {
                             if (Object.hasOwnProperty.call(this.orderEdit, key)) {
@@ -89,25 +91,26 @@ export default {
                         }
                         // Don't bother the API if nothing changed
                         if (Object.keys(newOrder).length !== 0) {
-                            // Fetch patch request to update order
-                            this.updateOrder(newOrder, this.order.id);
+                            valid = await this.updateOrder(newOrder, this.order.id);
                         }
-                        // TODO: Handle failed requests
-                        if (success) {
+                        if (valid) {
                             this.closeModal();
+                        } else {
+                            this.error = true;
                         }
                         break;
                     case "add":
-                        this.addOrder(this.orderEdit);
-                        // TODO: Handle failed requests
-                        if (success) {
+                        valid = await this.addOrder(this.orderEdit);
+                        if (valid) {
                             this.closeModal();
+                        } else {
+                            this.error = true;
                         }
                         break;
                 }
             }
         },
-        updateOrder(updatedOrder, orderId) {
+        async updateOrder(updatedOrder, orderId) {
             let method = "PATCH";
             let request = {
                 'method': method,
@@ -116,12 +119,20 @@ export default {
                     'Content-Type': 'application/json'
                 }
             };
-            fetch(window.location.origin + '/api/orders/' + orderId, request)
-                .then(res => res.json())
-                .then(res => this.$emit("update:order", res))
-                .catch(error => console.log(error));
+            return fetch(window.location.origin + '/api/orders/' + orderId, request)
+                .then(res => {
+                    if (res.ok) {
+                        return res.json()
+                                .then(res => {
+                                    this.$emit("update:order", res);
+                                    return true;
+                                }, () => { return false });
+                    } else {
+                        return false;
+                    }
+                })
         },
-        addOrder(newOrder) {
+        async addOrder(newOrder) {
             let request = {
                 method: "POST",
                 body: JSON.stringify(newOrder),
@@ -129,10 +140,18 @@ export default {
                     'Content-Type': 'application/json'
                 }
             };
-            fetch(window.location.origin + '/api/orders', request)
-                .then(res => res.json())
-                .then(res => this.$emit("add:order", res))
-                .catch(error => console.log(error));
+            return fetch(window.location.origin + '/api/orders', request)
+                    .then(res => {
+                        if (res.ok) {
+                            return res.json()
+                                    .then(res => {
+                                        this.$emit("add:order", res);
+                                        return true;
+                                    }, () => { return false });
+                        } else {
+                            return false;
+                        }
+                    })
         },
         setMode(newMode) {
             this.mode = newMode;

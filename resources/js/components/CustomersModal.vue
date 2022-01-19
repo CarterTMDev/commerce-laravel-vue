@@ -45,8 +45,10 @@
                                 <input v-model="customerEdit.country" id="country" class="form-control" placeholder="" required>
                             </div>
                         </div>
+                        <p v-if="error" class="text-danger">
+                            An error occurred. Please try again.
+                        </p>
                     </div>
-                    
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -69,7 +71,8 @@ export default {
                 validator: function(val) {
                     return ['add', 'edit'].indexOf(val) !== -1;
                 }
-            }
+            },
+            error: false
         }
     },
     props: {
@@ -83,14 +86,14 @@ export default {
         this.$parent.$on('modal:mode', this.setMode);
     },
     methods: {
-        onSubmit() {
+        async onSubmit() {
+            this.error = false;
             let valid = true;
             // TODO: Validate input
             if (valid) {
-                let success = true;
                 switch (this.mode) {
                     case "edit":
-                        // TODO: Check if customer info has been changed
+                        // Store all changed customer info in newCustomer object
                         let newCustomer = {};
                         for (const key in this.customerEdit) {
                             if (Object.hasOwnProperty.call(this.customerEdit, key)) {
@@ -102,25 +105,26 @@ export default {
                         }
                         // Don't bother the API if nothing changed
                         if (Object.keys(newCustomer).length !== 0) {
-                            // Fetch patch request to update customer
-                            this.updateCustomer(newCustomer, this.customer.id);
+                            valid = await this.updateCustomer(newCustomer, this.customer.id);
                         }
-                        // TODO: Handle failed requests
-                        if (success) {
+                        if (valid) {
                             this.closeModal();
+                        } else {
+                            this.error = true;
                         }
                         break;
                     case "add":
-                        this.addCustomer(this.customerEdit);
-                        // TODO: Handle failed requests
-                        if (success) {
+                        valid = await this.addCustomer(this.customerEdit);
+                        if (valid) {
                             this.closeModal();
+                        } else {
+                            this.error = true;
                         }
                         break;
                 }
             }
         },
-        updateCustomer(updatedCustomer, customerId) {
+        async updateCustomer(updatedCustomer, customerId) {
             let method = "PATCH";
             let request = {
                 'method': method,
@@ -129,12 +133,20 @@ export default {
                     'Content-Type': 'application/json'
                 }
             };
-            fetch(window.location.origin + '/api/customers/' + customerId, request)
-                .then(res => res.json())
-                .then(res => this.$emit("update:customer", res))
-                .catch(error => console.log(error));
+            return fetch(window.location.origin + '/api/customers/' + customerId, request)
+                .then(res => {
+                    if (res.ok) {
+                        return res.json()
+                                .then(res => {
+                                    this.$emit("update:customer", res);
+                                    return true;
+                                }, () => { return false });
+                    } else {
+                        return false;
+                    }
+                });
         },
-        addCustomer(newCustomer) {
+        async addCustomer(newCustomer) {
             let request = {
                 method: "POST",
                 body: JSON.stringify(newCustomer),
@@ -142,10 +154,18 @@ export default {
                     'Content-Type': 'application/json'
                 }
             };
-            fetch(window.location.origin + '/api/customers', request)
-                .then(res => res.json())
-                .then(res => this.$emit("add:customer", res))
-                .catch(error => console.log(error));
+            return fetch(window.location.origin + '/api/customers', request)
+                .then(res => {
+                    if (res.ok) {
+                        return res.json()
+                                .then(res => {
+                                    this.$emit("add:customer", res);
+                                    return true;
+                                }, () => { return false });
+                    } else {
+                        return false;
+                    }
+                });
         },
         setMode(newMode) {
             this.mode = newMode;

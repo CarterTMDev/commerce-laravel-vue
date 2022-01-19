@@ -114,23 +114,25 @@ export default {
             }
         },
         deleteCustomer() {
-            let success = true;
             fetch(window.location.origin + '/api/customers/' + this.editCustomer.id, {
                 method: 'DELETE'
-            }).then(res => res.json())
-            .catch(error => console.log(error));
-            // TODO: Handle failed requests
-            if (success) {
-                // Remove deleted customer from customers
-                for (let i = 0; i < this.customers.length; i++) {
-                    if (this.customers[i].id === this.editCustomer.id) {
-                        this.customers.splice(i, 1);
-                        break;
+            })
+            .then(res => res.ok)
+            .then(success => {
+                if (success) {
+                    // Remove deleted customer from customers
+                    for (let i = 0; i < this.customers.length; i++) {
+                        if (this.customers[i].id === this.editCustomer.id) {
+                            this.customers.splice(i, 1);
+                            break;
+                        }
                     }
+                    // Set editCustomer to the empty customer object
+                    this.editCustomer = this.customer;
+                } else {
+                    alert("An error occurred. Please try again.");
                 }
-                // Set editCustomer to the empty customer object
-                this.editCustomer = this.customer;
-            }
+            });
         }
     }
 }
