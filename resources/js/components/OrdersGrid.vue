@@ -110,7 +110,7 @@ export default {
     },
     methods: {
         selectOrder(order) {
-            window.location.href='/order/' + order.id;
+            window.location.href='/orders/' + order.id;
         },
         addOrder(order) {
             this.orders.push(order);

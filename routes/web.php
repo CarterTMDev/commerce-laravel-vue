@@ -20,3 +20,7 @@ Route::get('/', function () {
 Route::get('/customers/{id}', function ($id) {
     return view('customer', ['customerId' => $id]);
 });
+
+Route::get('/orders/{id}', function ($id) {
+    return view('order', ['orderId' => $id]);
+});

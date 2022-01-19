@@ -5608,6 +5608,98 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/OrderReport.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/OrderReport.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      report: {},
+      order: {},
+      customer: {}
+    };
+  },
+  props: {
+    orderId: Number
+  },
+  created: function created() {
+    var _this = this;
+
+    // Get the order data
+    fetch(window.location.origin + '/api/orders/' + this.orderId).then(function (res) {
+      return res.json();
+    }).then(function (res) {
+      _this.order = res;
+      return res;
+    }).then(function (orderRes) {
+      // Get the customer data
+      fetch(window.location.origin + '/api/customers/' + orderRes.customer_id).then(function (res) {
+        return res.json();
+      }).then(function (res) {
+        _this.customer = res; // Generate the report object from the order and customer data
+
+        _this.createReport();
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    })["catch"](function (error) {
+      console.log(error);
+    });
+  },
+  methods: {
+    getFullAddress: function getFullAddress(customer) {
+      var address = customer.address_1;
+      address += customer.address_2 ? " " + customer.address_2 + ", " : ", ";
+      address += customer.city + ", ";
+      address += customer.state + " " + customer.zipcode;
+      return address;
+    },
+    createReport: function createReport() {
+      this.report = {
+        'Order Id': this.order.id,
+        'Name': this.customer.first_name + ' ' + this.customer.last_name,
+        'Address': this.getFullAddress(this.customer),
+        'Total': '$' + Number(this.order.initial_cost + this.order.shipping_cost).toFixed(2)
+      };
+    },
+    exportToCsv: function exportToCsv() {}
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/OrdersGrid.vue?vue&type=script&lang=js&":
 /*!*****************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/OrdersGrid.vue?vue&type=script&lang=js& ***!
@@ -5737,7 +5829,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     selectOrder: function selectOrder(order) {
-      window.location.href = '/order/' + order.id;
+      window.location.href = '/orders/' + order.id;
     },
     addOrder: function addOrder(order) {
       this.orders.push(order);
@@ -28617,6 +28709,45 @@ component.options.__file = "resources/js/components/CustomersModal.vue"
 
 /***/ }),
 
+/***/ "./resources/js/components/OrderReport.vue":
+/*!*************************************************!*\
+  !*** ./resources/js/components/OrderReport.vue ***!
+  \*************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _OrderReport_vue_vue_type_template_id_3ce29ff2___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./OrderReport.vue?vue&type=template&id=3ce29ff2& */ "./resources/js/components/OrderReport.vue?vue&type=template&id=3ce29ff2&");
+/* harmony import */ var _OrderReport_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./OrderReport.vue?vue&type=script&lang=js& */ "./resources/js/components/OrderReport.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _OrderReport_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _OrderReport_vue_vue_type_template_id_3ce29ff2___WEBPACK_IMPORTED_MODULE_0__.render,
+  _OrderReport_vue_vue_type_template_id_3ce29ff2___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/OrderReport.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
 /***/ "./resources/js/components/OrdersGrid.vue":
 /*!************************************************!*\
   !*** ./resources/js/components/OrdersGrid.vue ***!
@@ -28766,6 +28897,22 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/OrderReport.vue?vue&type=script&lang=js&":
+/*!**************************************************************************!*\
+  !*** ./resources/js/components/OrderReport.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_OrderReport_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./OrderReport.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/OrderReport.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_OrderReport_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
 /***/ "./resources/js/components/OrdersGrid.vue?vue&type=script&lang=js&":
 /*!*************************************************************************!*\
   !*** ./resources/js/components/OrdersGrid.vue?vue&type=script&lang=js& ***!
@@ -28844,6 +28991,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CustomersModal_vue_vue_type_template_id_c3720afa___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CustomersModal_vue_vue_type_template_id_c3720afa___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CustomersModal.vue?vue&type=template&id=c3720afa& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CustomersModal.vue?vue&type=template&id=c3720afa&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/OrderReport.vue?vue&type=template&id=3ce29ff2&":
+/*!********************************************************************************!*\
+  !*** ./resources/js/components/OrderReport.vue?vue&type=template&id=3ce29ff2& ***!
+  \********************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_OrderReport_vue_vue_type_template_id_3ce29ff2___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_OrderReport_vue_vue_type_template_id_3ce29ff2___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_OrderReport_vue_vue_type_template_id_3ce29ff2___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./OrderReport.vue?vue&type=template&id=3ce29ff2& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/OrderReport.vue?vue&type=template&id=3ce29ff2&");
 
 
 /***/ }),
@@ -28955,9 +29119,6 @@ var render = function () {
                   {
                     on: {
                       click: function ($event) {
-                        $event.stopPropagation()
-                      },
-                      mouseover: function ($event) {
                         $event.stopPropagation()
                       },
                     },
@@ -29514,6 +29675,57 @@ var render = function () {
       ),
     ]
   )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/OrderReport.vue?vue&type=template&id=3ce29ff2&":
+/*!***********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/OrderReport.vue?vue&type=template&id=3ce29ff2& ***!
+  \***********************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function () {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "pt-3" }, [
+    _c("h3", [_vm._v("Order Report")]),
+    _vm._v(" "),
+    _c("div", { staticClass: "card" }, [
+      _c("div", { staticClass: "card-body" }, [
+        _c("table", { staticClass: "table table-striped" }, [
+          _c(
+            "tbody",
+            _vm._l(_vm.report, function (item, name) {
+              return _c("tr", { key: name }, [
+                _c("th", [_vm._v(_vm._s(name))]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(item))]),
+              ])
+            }),
+            0
+          ),
+        ]),
+      ]),
+    ]),
+    _vm._v(" "),
+    _c(
+      "button",
+      { staticClass: "btn btn-primary", on: { click: _vm.exportToCsv } },
+      [_vm._v("\n    Export to .CSV\n    ")]
+    ),
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -42241,6 +42453,7 @@ Vue.compile = compileToFunctions;
 var map = {
 	"./components/CustomersGrid.vue": "./resources/js/components/CustomersGrid.vue",
 	"./components/CustomersModal.vue": "./resources/js/components/CustomersModal.vue",
+	"./components/OrderReport.vue": "./resources/js/components/OrderReport.vue",
 	"./components/OrdersGrid.vue": "./resources/js/components/OrdersGrid.vue",
 	"./components/OrdersModal.vue": "./resources/js/components/OrdersModal.vue",
 	"./components/WarningModal.vue": "./resources/js/components/WarningModal.vue"
