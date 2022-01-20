@@ -2,47 +2,78 @@
 <div class="pt-3">
     <h3>Customers</h3>
     <p>Click on a customer to view their orders</p>
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Address</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr
-                v-for="customer in customers"
-                :key="customer.id"
-                @click="selectCustomer(customer)"
-            >
-                <td>{{ customer.first_name + " " + customer.last_name }}</td>
-                <td>{{ customer.email }}</td>
-                <td>{{ getFullAddress(customer) }}</td>
-                <td @click.stop>
-                    <button
-                        class="btn btn-primary"
-                        data-bs-toggle="modal"
-                        data-bs-target="#customersModal"
-                        @click="editCustomer = customer;
-                                $emit('modal:mode', 'edit');"
-                    >
-                        Edit
-                    </button>
-                </td>
-                <td @click.stop>
-                    <button
-                        class="btn btn-danger"
-                        data-bs-toggle="modal"
-                        data-bs-target="#deleteModal"
-                        @click="editCustomer = customer"
-                    >
-                        Delete
-                    </button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div v-if="customers.length > 0">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr
+                    v-for="customer in customers"
+                    :key="customer.id"
+                    @click="selectCustomer(customer)"
+                >
+                    <td>{{ customer.first_name + " " + customer.last_name }}</td>
+                    <td>{{ customer.email }}</td>
+                    <td>{{ getFullAddress(customer) }}</td>
+                    <td @click.stop>
+                        <button
+                            class="btn btn-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#customersModal"
+                            @click="editCustomer = customer;
+                                    $emit('modal:mode', 'edit');"
+                        >
+                            Edit
+                        </button>
+                    </td>
+                    <td @click.stop>
+                        <button
+                            class="btn btn-danger"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteModal"
+                            @click="editCustomer = customer"
+                        >
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <nav aria-label="Pages" v-if="customers.length > 0">
+            <ul class="pagination justify-content-center">
+                <li :class="(!pagination.prev_page_url ? 'disabled ' : '') + 'page-item'">
+                    <a class="page-link" @click="retrieveCustomers(pagination.prev_page_url)" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">
+                        Page {{ pagination.current_page }} of {{ pagination.last_page }}
+                    </a>
+                </li>
+                <li :class="(!pagination.next_page_url ? 'disabled ' : '') + 'page-item'">
+                    <a class="page-link" @click="retrieveCustomers(pagination.next_page_url)" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <div v-else class="container">
+        <figure class="text-center">
+            <blockquote class="blockquote">
+                <p>No customers found</p>
+            </blockquote>
+            <figcaption class="blockquote-footer">
+                Click the Add Customer button to create one
+            </figcaption>
+        </figure>
+    </div>
     <button
         class="btn btn-primary"
         data-bs-toggle="modal"
@@ -78,17 +109,15 @@ export default {
     data() {
         return {
             customers: [],
-            editCustomer: this.customer
+            editCustomer: this.customer,
+            pagination: {}
         }
     },
     props: {
         customer: Object
     },
     created() {
-        fetch(window.location.origin + '/api/customers')
-            .then(res => res.json())
-            .then(res => this.customers = res)
-            .catch(error => console.log(error));
+        this.retrieveCustomers();
     },
     methods: {
         getFullAddress(customer) {
@@ -98,11 +127,30 @@ export default {
             address += customer.state + " " + customer.zipcode;
             return address;
         },
+        setPagination(res) {
+            this.pagination = {
+                current_page: res['current_page'],
+                last_page: res['last_page'],
+                next_page_url: res['next_page_url'],
+                prev_page_url: res['prev_page_url']
+            };
+        },
+        retrieveCustomers(page_url) {
+            page_url = page_url || window.location.origin + '/api/customers';
+            fetch(page_url)
+                .then(res => res.json())
+                .then(res => {
+                    this.customers = res['data'];
+                    this.setPagination(res);
+                })
+                .catch(error => console.log(error));
+        },
         selectCustomer(customer) {
             window.location.href='customers/' + customer.id;
         },
         addCustomer(customer) {
             this.customers.push(customer);
+            this.retrieveCustomers();
         },
         updateCustomer(customer) {
             this.editCustomer = customer;
@@ -129,6 +177,8 @@ export default {
                     }
                     // Set editCustomer to the empty customer object
                     this.editCustomer = this.customer;
+                    // Retrieve the refreshed customers page
+                    this.retrieveCustomers();
                 } else {
                     alert("An error occurred. Please try again.");
                 }
