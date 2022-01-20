@@ -12,7 +12,7 @@ class CustomerController extends Controller
     private $validation = [
         "first_name" => ['required', 'string', 'max:255'],
         "last_name" => ['required', 'string', 'max:255'],
-        "email" => ['required', 'string', 'max:255', 'email', 'unique:customers'],
+        "email" => ['required', 'string', 'max:255', 'email', 'unique:App\Models\Customer'],
         "address_1" => ['required', 'string', 'max:255'],
         "address_2" => ['string', 'max:255', 'nullable'],
         "city" => ['required', 'string', 'max:255'],
@@ -96,7 +96,7 @@ class CustomerController extends Controller
             $customer->fill($request->input());
             // Change 'unique' rule to ignore this customer's id
             $validationRules = $this->validation;
-            $validationRules['email'][count($validationRules['email']) - 1] = Rule::unique('customers')->ignore($customer);
+            $validationRules['email'][count($validationRules['email']) - 1] = Rule::unique('App\Models\Customer')->ignore($customer);
             // Validate inputs
             $validator = Validator::make($customer->getAttributes(), $validationRules);
             if (!$validator->fails()) {

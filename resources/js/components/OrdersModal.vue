@@ -167,8 +167,9 @@ export default {
         validateInput() {
             this.invalid = false;
             this.invalidMessage = "";
-            // id: limit to max BIGINT value
-            if (Number(this.orderEdit['customer_id']) > 18446744073709551615) {
+            // id: limit to unsigned BIGINT value
+            if (Number(this.orderEdit['customer_id']) < 0
+                    || Number(this.orderEdit['customer_id']) > 18446744073709551615) {
                 // The user shouldn't be able to trigger this because the UI
                 // doesn't let you manually set customer_id
                 this.invalid = true;
