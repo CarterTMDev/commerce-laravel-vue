@@ -4,9 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class CustomerController extends Controller
 {
+    private $validation = [
+        "first_name" => ['required', 'string', 'max:255'],
+        "last_name" => ['required', 'string', 'max:255'],
+        "email" => ['required', 'string', 'max:255', 'email', 'unique:customers'],
+        "address_1" => ['required', 'string', 'max:255'],
+        "address_2" => ['string', 'max:255', 'nullable'],
+        "city" => ['required', 'string', 'max:255'],
+        "state" => ['required', 'string', 'max:255'],
+        "country" => ['required', 'string', 'max:255'],
+        "zipcode" => ['required', 'string', 'max:255', 'regex:/^\d{5}(?:[- ]?\d{4})?$/']// TODO: Implement postal codes from countries other than the US
+    ];
+
     /**
      * Display a listing of the resource.
      *
@@ -28,33 +42,27 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        // Check for fillable values
-        $customer = new Customer();
-        $customerAttr = $customer->getFillable();
-        $valid = true;
-        // TODO: If request has an unexpected input item key, $valid = false
-        //          Use $request->input() to get all input items
-        foreach ($customerAttr as $attr) {
-            if ($request->has($attr)) {
-                $value = $request->input($attr);
-                // TODO: input validation
-                $customer->setAttribute($attr, $value);
-            } else {
-                $valid = false;
-            }
-        }
-        if ($valid) {
+        // Validate inputs
+        $validator = Validator::make($request->input(), $this->validation);
+        if (!$validator->fails()) {
             // Save customer
+            $customer = new Customer($validator->validated());
             if ($customer->save()) {
                 // Customer saved
                 return $customer;
             } else {
                 // Return 400
-                return response()->json([], 400);
+                return response()->json($validator->errors(), 400);
             }
         } else {
+            // Check if the validator failed due to a duplicate email address
+            $emailErrors = $validator->errors()->get('email');
+            if (in_array("The email has already been taken.", $emailErrors)) {
+                // Return 409: Conflict
+                return response()->json($validator->errors(), 409);
+            }
             // Return 400
-            return response()->json([], 400);
+            return response()->json($validator->errors(), 400);
         }
     }
 
@@ -84,33 +92,24 @@ class CustomerController extends Controller
         // This should only respond to patch requests since you shouldn't
         // be able to update a customer's id, updated_at, or created_at columns
         if ($request->isMethod('PATCH')) {
-            // Check for requested changes to fillable values
-            $customerAttr = $customer->getAttributes();
-            $updatedAttr = [];
-            $valid = true;
-            // TODO: If request has an unexpected input item key, $valid = false
-            //          Use $request->input() to get all input items
-            foreach ($customerAttr as $key => $value) {
-                if ($request->has($key)) {
-                    $column = $request->input($key);
-                    if ($column != $value) {
-                        // TODO: input validation
-                        $updatedAttr[$key] = $column;
-                    }
-                }
-            }
-            if (!empty($updatedAttr) && $valid) {
-                // Update customer
-                $customer->fill($updatedAttr);
-                // Save customer
+            // Create an updated customer model
+            $customer->fill($request->input());
+            // Change 'unique' rule to ignore this customer's id
+            $validationRules = $this->validation;
+            $validationRules['email'][count($validationRules['email']) - 1] = Rule::unique('customers')->ignore($customer);
+            // Validate inputs
+            $validator = Validator::make($customer->getAttributes(), $validationRules);
+            if (!$validator->fails()) {
+                $customer->fill($validator->validated());
                 if ($customer->save()) {
+                    // Customer saved
                     return $customer;
                 } else {
-                    return response()->json([], 400);
+                    // Return 400
+                    return response()->json($validator->errors(), 400);
                 }
-            } else {
-                return response()->json([], 400);
             }
+            return response()->json($validator->errors(), 400);
         } else {
             // Send 405: Method not allowed
             return response()->json([], 405);

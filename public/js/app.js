@@ -5524,6 +5524,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }
       },
       error: false,
+      errorMessage: "",
       invalid: false,
       invalidMessage: ""
     };
@@ -5597,8 +5598,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 14:
                 if (success) {
                   _this.closeModal();
-                } else {
-                  _this.error = true;
                 }
 
                 return _context.abrupt("break", 21);
@@ -5612,8 +5611,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 if (success) {
                   _this.closeModal();
-                } else {
-                  _this.error = true;
                 }
 
                 return _context.abrupt("break", 21);
@@ -5655,6 +5652,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   } else {
                     return false;
                   }
+                })["catch"](function () {
+                  return false;
                 }));
 
               case 3:
@@ -5681,6 +5680,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     'Content-Type': 'application/json'
                   }
                 };
+                _this3.errorMessage = '';
+                _this3.error = false;
                 return _context3.abrupt("return", fetch(window.location.origin + '/api/customers', request).then(function (res) {
                   if (res.ok) {
                     return res.json().then(function (res) {
@@ -5688,14 +5689,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                       return true;
                     }, function () {
+                      _this3.error = true;
+                      _this3.errorMessage = 'An error occurred. Please try again.';
                       return false;
                     });
                   } else {
-                    return false;
+                    _this3.error = true;
+                    _this3.errorMessage = 'An error occurred. Please try again.';
+
+                    if (res.status == 409) {
+                      _this3.errorMessage = 'That email is taken. Please enter a different email.';
+                      return false;
+                    }
                   }
+                })["catch"](function () {
+                  _this3.error = true;
+                  _this3.errorMessage = 'An error occurred. Please try again.';
+                  return false;
                 }));
 
-              case 2:
+              case 4:
               case "end":
                 return _context3.stop();
             }
@@ -5713,7 +5726,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.invalid = false;
       this.invalidMessage = ""; // strings: limit to 255
 
-      if (this.customerEdit['first_name'].toString().length > 255 || this.customerEdit['last_name'].toString().length > 255 || this.customerEdit['email'].toString().length > 255 || this.customerEdit['address_1'].toString().length > 255 || this.customerEdit['address_2'].toString().length > 255 || this.customerEdit['city'].toString().length > 255 || this.customerEdit['state'].toString().length > 255 || this.customerEdit['zipcode'].toString().length > 255 || this.customerEdit['country'].toString().length > 255) {
+      if (this.customerEdit['first_name'].toString().length > 255 || this.customerEdit['last_name'].toString().length > 255 || this.customerEdit['email'].toString().length > 255 || this.customerEdit['address_1'].toString().length > 255 || this.customerEdit['address_2'] !== null && this.customerEdit['address_2'].toString().length > 255 || this.customerEdit['city'].toString().length > 255 || this.customerEdit['state'].toString().length > 255 || this.customerEdit['zipcode'].toString().length > 255 || this.customerEdit['country'].toString().length > 255) {
         this.invalidMessage = "No text field should have more than 255 characters.";
         this.invalid = true;
       } // check email
@@ -6260,6 +6273,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   } else {
                     return false;
                   }
+                })["catch"](function () {
+                  return false;
                 }));
 
               case 3:
@@ -6298,6 +6313,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   } else {
                     return false;
                   }
+                })["catch"](function () {
+                  return false;
                 }));
 
               case 2:
@@ -6333,8 +6350,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
       if (this.orderEdit['isShipped'] !== true && this.orderEdit['isShipped'] !== false) {
-        console.log(this.orderEdit['isShipped']); // Again, the user shouldn't be able to spoof a checkbox's value
-
+        // Again, the user shouldn't be able to spoof a checkbox's value
         this.invalid = true;
         this.error = true;
       }
@@ -30708,7 +30724,9 @@ var render = function () {
                   _vm.error
                     ? _c("p", { staticClass: "text-danger" }, [
                         _vm._v(
-                          "\n                        An error occurred. Please try again.\n                    "
+                          "\n                        " +
+                            _vm._s(_vm.errorMessage) +
+                            "\n                    "
                         ),
                       ])
                     : _vm._e(),

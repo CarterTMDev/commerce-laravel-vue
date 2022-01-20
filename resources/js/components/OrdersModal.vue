@@ -135,7 +135,7 @@ export default {
                     } else {
                         return false;
                     }
-                })
+                }).catch(() => { return false });
         },
         async addOrder(newOrder) {
             let request = {
@@ -156,7 +156,7 @@ export default {
                         } else {
                             return false;
                         }
-                    })
+                    }).catch(() => { return false });
         },
         setMode(newMode) {
             this.mode = newMode;

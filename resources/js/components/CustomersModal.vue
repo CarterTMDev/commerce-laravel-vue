@@ -46,7 +46,7 @@
                             </div>
                         </div>
                         <p v-if="error" class="text-danger">
-                            An error occurred. Please try again.
+                            {{ errorMessage }}
                         </p>
                         <p v-if="invalid" class="text-danger">
                             {{ invalidMessage }}
@@ -76,6 +76,7 @@ export default {
                 }
             },
             error: false,
+            errorMessage: "",
             invalid: false,
             invalidMessage: ""
         }
@@ -119,16 +120,12 @@ export default {
                         }
                         if (success) {
                             this.closeModal();
-                        } else {
-                            this.error = true;
                         }
                         break;
                     case "add":
                         success = await this.addCustomer(this.customerEdit);
                         if (success) {
                             this.closeModal();
-                        } else {
-                            this.error = true;
                         }
                         break;
                 }
@@ -154,7 +151,7 @@ export default {
                     } else {
                         return false;
                     }
-                });
+                }).catch(() => { return false });
         },
         async addCustomer(newCustomer) {
             let request = {
@@ -164,6 +161,8 @@ export default {
                     'Content-Type': 'application/json'
                 }
             };
+            this.errorMessage = '';
+            this.error = false;
             return fetch(window.location.origin + '/api/customers', request)
                 .then(res => {
                     if (res.ok) {
@@ -171,10 +170,24 @@ export default {
                                 .then(res => {
                                     this.$emit("add:customer", res);
                                     return true;
-                                }, () => { return false });
+                                },
+                                () => {
+                                    this.error = true;
+                                    this.errorMessage = 'An error occurred. Please try again.';
+                                    return false;
+                                });
                     } else {
-                        return false;
+                        this.error = true;
+                        this.errorMessage = 'An error occurred. Please try again.';
+                        if (res.status == 409) {
+                            this.errorMessage = 'That email is taken. Please enter a different email.';
+                            return false;
+                        }
                     }
+                }).catch(() => {
+                    this.error = true;
+                    this.errorMessage = 'An error occurred. Please try again.';
+                    return false;
                 });
         },
         setMode(newMode) {
@@ -191,7 +204,8 @@ export default {
                     || this.customerEdit['last_name'].toString().length > 255
                     || this.customerEdit['email'].toString().length > 255
                     || this.customerEdit['address_1'].toString().length > 255
-                    || this.customerEdit['address_2'].toString().length > 255
+                    || (this.customerEdit['address_2'] !== null
+                        && this.customerEdit['address_2'].toString().length > 255)
                     || this.customerEdit['city'].toString().length > 255
                     || this.customerEdit['state'].toString().length > 255
                     || this.customerEdit['zipcode'].toString().length > 255
