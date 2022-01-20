@@ -30386,7 +30386,7 @@ var render = function () {
                             "a",
                             {
                               staticClass: "page-link",
-                              attrs: { href: "#", "aria-label": "Previous" },
+                              attrs: { "aria-label": "Previous" },
                               on: {
                                 click: function ($event) {
                                   return _vm.retrieveCustomers(
@@ -30405,19 +30405,15 @@ var render = function () {
                       ),
                       _vm._v(" "),
                       _c("li", { staticClass: "page-item disabled" }, [
-                        _c(
-                          "a",
-                          { staticClass: "page-link", attrs: { href: "#" } },
-                          [
-                            _vm._v(
-                              "\n                        Page " +
-                                _vm._s(_vm.pagination.current_page) +
-                                " of " +
-                                _vm._s(_vm.pagination.last_page) +
-                                "\n                    "
-                            ),
-                          ]
-                        ),
+                        _c("a", { staticClass: "page-link" }, [
+                          _vm._v(
+                            "\n                        Page " +
+                              _vm._s(_vm.pagination.current_page) +
+                              " of " +
+                              _vm._s(_vm.pagination.last_page) +
+                              "\n                    "
+                          ),
+                        ]),
                       ]),
                       _vm._v(" "),
                       _c(
@@ -30432,7 +30428,7 @@ var render = function () {
                             "a",
                             {
                               staticClass: "page-link",
-                              attrs: { href: "#", "aria-label": "Next" },
+                              attrs: { "aria-label": "Next" },
                               on: {
                                 click: function ($event) {
                                   return _vm.retrieveCustomers(
@@ -31202,7 +31198,7 @@ var render = function () {
                       "a",
                       {
                         staticClass: "page-link",
-                        attrs: { href: "#", "aria-label": "Previous" },
+                        attrs: { "aria-label": "Previous" },
                         on: {
                           click: function ($event) {
                             return _vm.retrieveOrders(
@@ -31221,7 +31217,7 @@ var render = function () {
                 ),
                 _vm._v(" "),
                 _c("li", { staticClass: "page-item disabled" }, [
-                  _c("a", { staticClass: "page-link", attrs: { href: "#" } }, [
+                  _c("a", { staticClass: "page-link" }, [
                     _vm._v(
                       "\n                        Page " +
                         _vm._s(_vm.pagination.current_page) +
@@ -31244,7 +31240,7 @@ var render = function () {
                       "a",
                       {
                         staticClass: "page-link",
-                        attrs: { href: "#", "aria-label": "Next" },
+                        attrs: { "aria-label": "Next" },
                         on: {
                           click: function ($event) {
                             return _vm.retrieveOrders(

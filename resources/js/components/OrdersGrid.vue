@@ -55,17 +55,17 @@
         <nav aria-label="Pages">
             <ul class="pagination justify-content-center">
                 <li :class="(!pagination.prev_page_url ? 'disabled ' : '') + 'page-item'">
-                    <a class="page-link" @click="retrieveOrders(pagination.prev_page_url)" href="#" aria-label="Previous">
+                    <a class="page-link" @click="retrieveOrders(pagination.prev_page_url)" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
                 <li class="page-item disabled">
-                    <a class="page-link" href="#">
+                    <a class="page-link">
                         Page {{ pagination.current_page }} of {{ pagination.last_page }}
                     </a>
                 </li>
                 <li :class="(!pagination.next_page_url ? 'disabled ' : '') + 'page-item'">
-                    <a class="page-link" @click="retrieveOrders(pagination.next_page_url)" href="#" aria-label="Next">
+                    <a class="page-link" @click="retrieveOrders(pagination.next_page_url)" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
