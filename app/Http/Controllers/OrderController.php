@@ -22,10 +22,9 @@ class OrderController extends Controller
      */
     public function index()
     {
-        // Retrieve orders from the table
-        $orders = Order::all();
+        // Retrieve paginated orders from the table
+        $orders = Order::orderBy('created_at', 'desc')->paginate(8);
         return $orders;
-        // TODO: Paginate data
     }
 
     /**

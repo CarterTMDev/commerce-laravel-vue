@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -28,10 +29,9 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        // Retrieve customers from the table
-        $customers = Customer::all();
+        // Retrieve paginated customers from the table
+        $customers = Customer::orderBy('created_at', 'desc')->paginate(8);
         return $customers;
-        // TODO: Paginate data
     }
 
     /**
@@ -134,6 +134,8 @@ class CustomerController extends Controller
     public function orders(Request $request, $id)
     {
         $customer = Customer::findOrFail($id);
-        return $customer->orders;
+        // Return paginated orders
+        $orders = Order::whereBelongsTo($customer)->orderBy('created_at', 'desc')->paginate(8);
+        return $orders;
     }
 }

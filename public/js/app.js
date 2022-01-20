@@ -5347,6 +5347,37 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -5357,22 +5388,15 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       customers: [],
-      editCustomer: this.customer
+      editCustomer: this.customer,
+      pagination: {}
     };
   },
   props: {
     customer: Object
   },
   created: function created() {
-    var _this = this;
-
-    fetch(window.location.origin + '/api/customers').then(function (res) {
-      return res.json();
-    }).then(function (res) {
-      return _this.customers = res;
-    })["catch"](function (error) {
-      return console.log(error);
-    });
+    this.retrieveCustomers();
   },
   methods: {
     getFullAddress: function getFullAddress(customer) {
@@ -5382,11 +5406,34 @@ __webpack_require__.r(__webpack_exports__);
       address += customer.state + " " + customer.zipcode;
       return address;
     },
+    setPagination: function setPagination(res) {
+      this.pagination = {
+        current_page: res['current_page'],
+        last_page: res['last_page'],
+        next_page_url: res['next_page_url'],
+        prev_page_url: res['prev_page_url']
+      };
+    },
+    retrieveCustomers: function retrieveCustomers(page_url) {
+      var _this = this;
+
+      page_url = page_url || window.location.origin + '/api/customers';
+      fetch(page_url).then(function (res) {
+        return res.json();
+      }).then(function (res) {
+        _this.customers = res['data'];
+
+        _this.setPagination(res);
+      })["catch"](function (error) {
+        return console.log(error);
+      });
+    },
     selectCustomer: function selectCustomer(customer) {
       window.location.href = 'customers/' + customer.id;
     },
     addCustomer: function addCustomer(customer) {
       this.customers.push(customer);
+      this.retrieveCustomers();
     },
     updateCustomer: function updateCustomer(customer) {
       this.editCustomer = customer;
@@ -5417,7 +5464,9 @@ __webpack_require__.r(__webpack_exports__);
           } // Set editCustomer to the empty customer object
 
 
-          _this2.editCustomer = _this2.customer;
+          _this2.editCustomer = _this2.customer; // Retrieve the refreshed customers page
+
+          _this2.retrieveCustomers();
         } else {
           alert("An error occurred. Please try again.");
         }
@@ -5974,6 +6023,37 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -5985,7 +6065,8 @@ __webpack_require__.r(__webpack_exports__);
     return {
       customer: {},
       orders: [],
-      editOrder: JSON.parse(JSON.stringify(this.order))
+      editOrder: JSON.parse(JSON.stringify(this.order)),
+      pagination: {}
     };
   },
   props: {
@@ -6004,22 +6085,42 @@ __webpack_require__.r(__webpack_exports__);
       return _this.customer = res;
     }).then(function () {
       return _this.editOrder.customer_id = _this.customerId;
-    }).then(fetch(window.location.origin + '/api/customers/' + this.customerId + '/orders').then(function (res) {
-      return res.json();
-    }).then(function (res) {
-      return _this.orders = res;
+    }) // Retrieve orders
+    .then(function () {
+      return _this.retrieveOrders();
     })["catch"](function (error) {
-      console.log(error);
-    }))["catch"](function (error) {
-      console.log(error);
+      return console.log(error);
     });
   },
   methods: {
+    setPagination: function setPagination(res) {
+      this.pagination = {
+        current_page: res['current_page'],
+        last_page: res['last_page'],
+        next_page_url: res['next_page_url'],
+        prev_page_url: res['prev_page_url']
+      };
+    },
+    retrieveOrders: function retrieveOrders(page_url) {
+      var _this2 = this;
+
+      page_url = page_url || window.location.origin + '/api/customers/' + this.customerId + '/orders';
+      fetch(page_url).then(function (res) {
+        return res.json();
+      }).then(function (res) {
+        _this2.orders = res['data'];
+
+        _this2.setPagination(res);
+      })["catch"](function (error) {
+        return console.log(error);
+      });
+    },
     selectOrder: function selectOrder(order) {
       window.location.href = '/orders/' + order.id;
     },
     addOrder: function addOrder(order) {
       this.orders.push(order);
+      this.retrieveOrders();
     },
     updateOrder: function updateOrder(order) {
       this.editOrder = order;
@@ -6032,7 +6133,7 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     deleteOrder: function deleteOrder() {
-      var _this2 = this;
+      var _this3 = this;
 
       fetch(window.location.origin + '/api/orders/' + this.editOrder.id, {
         method: 'DELETE'
@@ -6041,17 +6142,19 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (success) {
         if (success) {
           // Remove deleted order from orders
-          for (var i = 0; i < _this2.orders.length; i++) {
-            if (_this2.orders[i].id === _this2.editOrder.id) {
-              _this2.orders.splice(i, 1);
+          for (var i = 0; i < _this3.orders.length; i++) {
+            if (_this3.orders[i].id === _this3.editOrder.id) {
+              _this3.orders.splice(i, 1);
 
               break;
             }
           } // Set editOrder to the empty order object
 
 
-          _this2.editOrder = _this2.order;
-          _this2.editOrder.customer_id = _this2.customerId;
+          _this3.editOrder = _this3.order;
+          _this3.editOrder.customer_id = _this3.customerId; // Retrieve the refreshed orders page
+
+          _this3.retrieveOrders();
         } else {
           alert("An error occurred. Please try again.");
         }
@@ -30163,105 +30266,191 @@ var render = function () {
       _vm._v(" "),
       _c("p", [_vm._v("Click on a customer to view their orders")]),
       _vm._v(" "),
-      _c("table", { staticClass: "table table-hover" }, [
-        _vm._m(0),
-        _vm._v(" "),
-        _c(
-          "tbody",
-          _vm._l(_vm.customers, function (customer) {
-            return _c(
-              "tr",
-              {
-                key: customer.id,
-                on: {
-                  click: function ($event) {
-                    return _vm.selectCustomer(customer)
-                  },
-                },
-              },
-              [
-                _c("td", [
-                  _vm._v(
-                    _vm._s(customer.first_name + " " + customer.last_name)
+      _vm.customers.length > 0
+        ? _c("div", [
+            _c("table", { staticClass: "table table-hover" }, [
+              _vm._m(0),
+              _vm._v(" "),
+              _c(
+                "tbody",
+                _vm._l(_vm.customers, function (customer) {
+                  return _c(
+                    "tr",
+                    {
+                      key: customer.id,
+                      on: {
+                        click: function ($event) {
+                          return _vm.selectCustomer(customer)
+                        },
+                      },
+                    },
+                    [
+                      _c("td", [
+                        _vm._v(
+                          _vm._s(customer.first_name + " " + customer.last_name)
+                        ),
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(customer.email))]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(_vm.getFullAddress(customer)))]),
+                      _vm._v(" "),
+                      _c(
+                        "td",
+                        {
+                          on: {
+                            click: function ($event) {
+                              $event.stopPropagation()
+                            },
+                          },
+                        },
+                        [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-primary",
+                              attrs: {
+                                "data-bs-toggle": "modal",
+                                "data-bs-target": "#customersModal",
+                              },
+                              on: {
+                                click: function ($event) {
+                                  _vm.editCustomer = customer
+                                  _vm.$emit("modal:mode", "edit")
+                                },
+                              },
+                            },
+                            [
+                              _vm._v(
+                                "\n                            Edit\n                        "
+                              ),
+                            ]
+                          ),
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "td",
+                        {
+                          on: {
+                            click: function ($event) {
+                              $event.stopPropagation()
+                            },
+                          },
+                        },
+                        [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-danger",
+                              attrs: {
+                                "data-bs-toggle": "modal",
+                                "data-bs-target": "#deleteModal",
+                              },
+                              on: {
+                                click: function ($event) {
+                                  _vm.editCustomer = customer
+                                },
+                              },
+                            },
+                            [
+                              _vm._v(
+                                "\n                            Delete\n                        "
+                              ),
+                            ]
+                          ),
+                        ]
+                      ),
+                    ]
+                  )
+                }),
+                0
+              ),
+            ]),
+            _vm._v(" "),
+            _vm.customers.length > 0
+              ? _c("nav", { attrs: { "aria-label": "Pages" } }, [
+                  _c(
+                    "ul",
+                    { staticClass: "pagination justify-content-center" },
+                    [
+                      _c(
+                        "li",
+                        {
+                          class:
+                            (!_vm.pagination.prev_page_url ? "disabled " : "") +
+                            "page-item",
+                        },
+                        [
+                          _c(
+                            "a",
+                            {
+                              staticClass: "page-link",
+                              attrs: { "aria-label": "Previous" },
+                              on: {
+                                click: function ($event) {
+                                  return _vm.retrieveCustomers(
+                                    _vm.pagination.prev_page_url
+                                  )
+                                },
+                              },
+                            },
+                            [
+                              _c("span", { attrs: { "aria-hidden": "true" } }, [
+                                _vm._v("«"),
+                              ]),
+                            ]
+                          ),
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c("li", { staticClass: "page-item disabled" }, [
+                        _c("a", { staticClass: "page-link" }, [
+                          _vm._v(
+                            "\n                        Page " +
+                              _vm._s(_vm.pagination.current_page) +
+                              " of " +
+                              _vm._s(_vm.pagination.last_page) +
+                              "\n                    "
+                          ),
+                        ]),
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "li",
+                        {
+                          class:
+                            (!_vm.pagination.next_page_url ? "disabled " : "") +
+                            "page-item",
+                        },
+                        [
+                          _c(
+                            "a",
+                            {
+                              staticClass: "page-link",
+                              attrs: { "aria-label": "Next" },
+                              on: {
+                                click: function ($event) {
+                                  return _vm.retrieveCustomers(
+                                    _vm.pagination.next_page_url
+                                  )
+                                },
+                              },
+                            },
+                            [
+                              _c("span", { attrs: { "aria-hidden": "true" } }, [
+                                _vm._v("»"),
+                              ]),
+                            ]
+                          ),
+                        ]
+                      ),
+                    ]
                   ),
-                ]),
-                _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(customer.email))]),
-                _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(_vm.getFullAddress(customer)))]),
-                _vm._v(" "),
-                _c(
-                  "td",
-                  {
-                    on: {
-                      click: function ($event) {
-                        $event.stopPropagation()
-                      },
-                    },
-                  },
-                  [
-                    _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-primary",
-                        attrs: {
-                          "data-bs-toggle": "modal",
-                          "data-bs-target": "#customersModal",
-                        },
-                        on: {
-                          click: function ($event) {
-                            _vm.editCustomer = customer
-                            _vm.$emit("modal:mode", "edit")
-                          },
-                        },
-                      },
-                      [
-                        _vm._v(
-                          "\n                        Edit\n                    "
-                        ),
-                      ]
-                    ),
-                  ]
-                ),
-                _vm._v(" "),
-                _c(
-                  "td",
-                  {
-                    on: {
-                      click: function ($event) {
-                        $event.stopPropagation()
-                      },
-                    },
-                  },
-                  [
-                    _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-danger",
-                        attrs: {
-                          "data-bs-toggle": "modal",
-                          "data-bs-target": "#deleteModal",
-                        },
-                        on: {
-                          click: function ($event) {
-                            _vm.editCustomer = customer
-                          },
-                        },
-                      },
-                      [
-                        _vm._v(
-                          "\n                        Delete\n                    "
-                        ),
-                      ]
-                    ),
-                  ]
-                ),
-              ]
-            )
-          }),
-          0
-        ),
-      ]),
+                ])
+              : _vm._e(),
+          ])
+        : _c("div", { staticClass: "container" }, [_vm._m(1)]),
       _vm._v(" "),
       _c(
         "button",
@@ -30318,6 +30507,22 @@ var staticRenderFns = [
         _c("th", [_vm._v("Email")]),
         _vm._v(" "),
         _c("th", [_vm._v("Address")]),
+      ]),
+    ])
+  },
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("figure", { staticClass: "text-center" }, [
+      _c("blockquote", { staticClass: "blockquote" }, [
+        _c("p", [_vm._v("No customers found")]),
+      ]),
+      _vm._v(" "),
+      _c("figcaption", { staticClass: "blockquote-footer" }, [
+        _vm._v(
+          "\n                Click the Add Customer button to create one\n            "
+        ),
       ]),
     ])
   },
@@ -30855,119 +31060,207 @@ var render = function () {
       _vm._v(" "),
       _c("p", [_vm._v("Click on an order to view its report")]),
       _vm._v(" "),
-      _c("table", { staticClass: "table table-hover" }, [
-        _vm._m(0),
-        _vm._v(" "),
-        _c(
-          "tbody",
-          _vm._l(_vm.orders, function (order) {
-            return _c(
-              "tr",
-              {
-                key: order.id,
-                on: {
-                  click: function ($event) {
-                    return _vm.selectOrder(order)
-                  },
-                },
-              },
-              [
-                _c("td", [
-                  _vm._v(_vm._s(_vm.timestampToDateTime(order.created_at))),
-                ]),
-                _vm._v(" "),
-                _c("td", [
-                  _vm._v("$" + _vm._s(Number(order.initial_cost).toFixed(2))),
-                ]),
-                _vm._v(" "),
-                _c("td", [
-                  _vm._v("$" + _vm._s(Number(order.shipping_cost).toFixed(2))),
-                ]),
-                _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(order.isShipped ? "Yes" : "No"))]),
-                _vm._v(" "),
-                _c(
-                  "td",
-                  {
-                    on: {
-                      click: function ($event) {
-                        $event.stopPropagation()
+      _vm.orders.length > 0
+        ? _c("div", [
+            _c("table", { staticClass: "table table-hover" }, [
+              _vm._m(0),
+              _vm._v(" "),
+              _c(
+                "tbody",
+                _vm._l(_vm.orders, function (order) {
+                  return _c(
+                    "tr",
+                    {
+                      key: order.id,
+                      on: {
+                        click: function ($event) {
+                          return _vm.selectOrder(order)
+                        },
                       },
                     },
+                    [
+                      _c("td", [
+                        _vm._v(
+                          _vm._s(_vm.timestampToDateTime(order.created_at))
+                        ),
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _vm._v(
+                          "$" + _vm._s(Number(order.initial_cost).toFixed(2))
+                        ),
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _vm._v(
+                          "$" + _vm._s(Number(order.shipping_cost).toFixed(2))
+                        ),
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _vm._v(_vm._s(order.isShipped ? "Yes" : "No")),
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "td",
+                        {
+                          on: {
+                            click: function ($event) {
+                              $event.stopPropagation()
+                            },
+                          },
+                        },
+                        [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-primary",
+                              attrs: {
+                                "data-bs-toggle": "modal",
+                                "data-bs-target": "#ordersModal",
+                              },
+                              on: {
+                                click: function ($event) {
+                                  _vm.editOrder = order
+                                  if (_vm.editOrder.shipping_cost !== null) {
+                                    _vm.editOrder.shipping_cost = Number(
+                                      _vm.editOrder.shipping_cost
+                                    ).toFixed(2)
+                                  }
+                                  if (_vm.editOrder.initial_cost !== null) {
+                                    _vm.editOrder.initial_cost = Number(
+                                      _vm.editOrder.initial_cost
+                                    ).toFixed(2)
+                                  }
+                                  _vm.$emit("modal:mode", "edit")
+                                },
+                              },
+                            },
+                            [
+                              _vm._v(
+                                "\n                            Edit\n                        "
+                              ),
+                            ]
+                          ),
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "td",
+                        {
+                          on: {
+                            click: function ($event) {
+                              $event.stopPropagation()
+                            },
+                          },
+                        },
+                        [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-danger",
+                              attrs: {
+                                "data-bs-toggle": "modal",
+                                "data-bs-target": "#deleteModal",
+                              },
+                              on: {
+                                click: function ($event) {
+                                  _vm.editOrder = order
+                                },
+                              },
+                            },
+                            [
+                              _vm._v(
+                                "\n                            Delete\n                        "
+                              ),
+                            ]
+                          ),
+                        ]
+                      ),
+                    ]
+                  )
+                }),
+                0
+              ),
+            ]),
+            _vm._v(" "),
+            _c("nav", { attrs: { "aria-label": "Pages" } }, [
+              _c("ul", { staticClass: "pagination justify-content-center" }, [
+                _c(
+                  "li",
+                  {
+                    class:
+                      (!_vm.pagination.prev_page_url ? "disabled " : "") +
+                      "page-item",
                   },
                   [
                     _c(
-                      "button",
+                      "a",
                       {
-                        staticClass: "btn btn-primary",
-                        attrs: {
-                          "data-bs-toggle": "modal",
-                          "data-bs-target": "#ordersModal",
-                        },
+                        staticClass: "page-link",
+                        attrs: { "aria-label": "Previous" },
                         on: {
                           click: function ($event) {
-                            _vm.editOrder = order
-                            if (_vm.editOrder.shipping_cost !== null) {
-                              _vm.editOrder.shipping_cost = Number(
-                                _vm.editOrder.shipping_cost
-                              ).toFixed(2)
-                            }
-                            if (_vm.editOrder.initial_cost !== null) {
-                              _vm.editOrder.initial_cost = Number(
-                                _vm.editOrder.initial_cost
-                              ).toFixed(2)
-                            }
-                            _vm.$emit("modal:mode", "edit")
+                            return _vm.retrieveOrders(
+                              _vm.pagination.prev_page_url
+                            )
                           },
                         },
                       },
                       [
-                        _vm._v(
-                          "\n                        Edit\n                    "
-                        ),
+                        _c("span", { attrs: { "aria-hidden": "true" } }, [
+                          _vm._v("«"),
+                        ]),
                       ]
                     ),
                   ]
                 ),
                 _vm._v(" "),
+                _c("li", { staticClass: "page-item disabled" }, [
+                  _c("a", { staticClass: "page-link" }, [
+                    _vm._v(
+                      "\n                        Page " +
+                        _vm._s(_vm.pagination.current_page) +
+                        " of " +
+                        _vm._s(_vm.pagination.last_page) +
+                        "\n                    "
+                    ),
+                  ]),
+                ]),
+                _vm._v(" "),
                 _c(
-                  "td",
+                  "li",
                   {
-                    on: {
-                      click: function ($event) {
-                        $event.stopPropagation()
-                      },
-                    },
+                    class:
+                      (!_vm.pagination.next_page_url ? "disabled " : "") +
+                      "page-item",
                   },
                   [
                     _c(
-                      "button",
+                      "a",
                       {
-                        staticClass: "btn btn-danger",
-                        attrs: {
-                          "data-bs-toggle": "modal",
-                          "data-bs-target": "#deleteModal",
-                        },
+                        staticClass: "page-link",
+                        attrs: { "aria-label": "Next" },
                         on: {
                           click: function ($event) {
-                            _vm.editOrder = order
+                            return _vm.retrieveOrders(
+                              _vm.pagination.next_page_url
+                            )
                           },
                         },
                       },
                       [
-                        _vm._v(
-                          "\n                        Delete\n                    "
-                        ),
+                        _c("span", { attrs: { "aria-hidden": "true" } }, [
+                          _vm._v("»"),
+                        ]),
                       ]
                     ),
                   ]
                 ),
-              ]
-            )
-          }),
-          0
-        ),
-      ]),
+              ]),
+            ]),
+          ])
+        : _c("div", { staticClass: "container" }, [_vm._m(1)]),
       _vm._v(" "),
       _c(
         "button",
@@ -31019,6 +31312,22 @@ var staticRenderFns = [
         _c("th", [_vm._v("Shipping Cost")]),
         _vm._v(" "),
         _c("th", [_vm._v("Has Shipped")]),
+      ]),
+    ])
+  },
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("figure", { staticClass: "text-center" }, [
+      _c("blockquote", { staticClass: "blockquote" }, [
+        _c("p", [_vm._v("No orders found")]),
+      ]),
+      _vm._v(" "),
+      _c("figcaption", { staticClass: "blockquote-footer" }, [
+        _vm._v(
+          "\n                Click the Add Order button to create one\n            "
+        ),
       ]),
     ])
   },

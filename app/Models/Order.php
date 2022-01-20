@@ -15,6 +15,11 @@ class Order extends Model
         'shipping_cost'
     ];
 
+    public function customer()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function makeEmpty()
     {
         $empty = [];
