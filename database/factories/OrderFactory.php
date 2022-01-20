@@ -15,7 +15,7 @@ class OrderFactory extends Factory
     {
         return [
             'isShipped' => rand(0, 1) == 0 ? true : false,
-            'initial_cost' => rand(5, 20) + rand(0, 99) / 100,// TODO: generate this with products_purchased table
+            'initial_cost' => rand(5, 20) + rand(0, 99) / 100,
             'shipping_cost' => rand(5, 20) + rand(0, 99) / 100
         ];
     }

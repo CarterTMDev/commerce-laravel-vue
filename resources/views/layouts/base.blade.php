@@ -15,7 +15,7 @@
 <body>
     <div id="app">
         @section('navbar')
-        {{-- TODO: vue navbar --}}
+        
         @endsection
 
         <div class="container">
@@ -23,7 +23,7 @@
         </div>
 
         @section('footer')
-        {{-- TODO: vue footer --}}
+        
         @endsection
     </div>
 </body>
