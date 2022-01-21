@@ -1,3 +1,16 @@
+# A Fullstack Commerce Web App
+
+[Vue.js](https://vuejs.org/) in the front, [Laravel PHP framework](https://laravel.com/) in the back.
+
+## Features
+
+* Full CRUD functionality
+* MVC architecture so good you can make API calls with your eyes closed
+* Commented code with no profanities
+* Good source of vitamin C [^1]
+
+[^1]: This statement has not been evaluated by the FDA.
+
 ## Installation
 
 Clone the repository
@@ -21,6 +34,12 @@ Create the database
 
     ./vendor/bin/sail php artisan migrate
 
-(Optional) Seed the database
+(Optional) Fill the database with dummy data
 
     ./vendor/bin/sail php artisan db:seed
+
+## License
+
+Open an issue and send me a link to a cool GitHub repository. If it's cool enough, I'll let you use this for whatever you want.
+
+Or if you're lame you can just use the [MIT](https://choosealicense.com/licenses/mit/) license.
