@@ -5,7 +5,7 @@
 ## Features
 
 * Full CRUD functionality
-* MVC architecture so good you can make API calls with your eyes closed
+* MVC architecture so decoupled you can make API calls with your eyes closed
 * Commented code with no profanities
 * Good source of vitamin C [^1]
 
