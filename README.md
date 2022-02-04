@@ -20,6 +20,10 @@ Clone the repository
 Switch to the repo folder
 
     cd commerce-laravel-vue
+    
+Copy the .env.example file, rename as `.env`, and edit the environment variables as needed (such as the SQL credentials).
+
+    cp .env.example .env
 
 Run Sail (Info: https://laravel.com/docs/8.x/sail)
 
